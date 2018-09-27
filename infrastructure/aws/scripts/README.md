@@ -1,4 +1,4 @@
-To Run The Scripts:
+To Run The Scripts
 
 ------ CSYE6225-AWS-NETWORKING-SETUP.SH
 1) Run the command ./ csye6225-aws-networking-setup.sh "VPCNAME"
