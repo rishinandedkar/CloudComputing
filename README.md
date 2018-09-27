@@ -19,6 +19,9 @@ Nuid:001832337
 Email: nandedkar.r@northeastern.edu
 Nuid:001889736
 
+Programming Language and framework used:
+Java, Spring Boot Framework, MySQL/MariaDB, Built using Gradle
+
 Prerequisites for building the application:
 1. Install Spring Tool Suite (STS)
 2. Install Postman
