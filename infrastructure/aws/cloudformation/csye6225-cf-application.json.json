@@ -1,0 +1,164 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+  "Parameters": {
+    "vpcTag": {
+      "Type": "String"
+    },
+    "igTag" : {
+      "Type" : "String"
+    },
+    "publicRouteTableTag" : {
+      "Type" : "String"
+    },
+    "privateRouteTableTag" : {
+      "Type" : "String"
+    },
+    "webSubnetTag" : {
+      "Type" : "String"
+    },
+    "dbSubnetTag" : {
+      "Type" : "String"
+    },
+    "keyTag" : {
+      "Type" : "String"
+    }
+  },
+  "Resources" : {
+    "myVPC" : {
+      "Type" : "AWS::EC2::VPC",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "EnableDnsSupport" : "true",
+        "EnableDnsHostnames" : "true",
+        "Tags" : [ {"Key" : "Name", "Value" : {"Ref" : "vpcTag"}} ]
+      }
+    },
+    "webSubnet" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/24",
+        "AvailabilityZone" : "us-east-1c",
+        "MapPublicIpOnLaunch" : true,
+        "Tags" : [ {"Key" : "Name", "Value" : {"Ref" : "webSubnetTag"}} ],
+        "VpcId" : {"Ref" : "myVPC"}
+      }
+    },
+    "webSubnet2" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "CidrBlock" : "10.0.3.0/24",
+        "AvailabilityZone" : "us-east-1d",
+        "MapPublicIpOnLaunch" : true,
+        "Tags" : [ {"Key" : "Name", "Value" : {"Ref" : "webSubnetTag"}} ],
+        "VpcId" : {"Ref" : "myVPC"}
+      }
+    },
+      "dbSubnet1" : {
+        "Type" : "AWS::EC2::Subnet",
+        "Properties" : {
+          "CidrBlock" : "10.0.1.0/24",
+          "AvailabilityZone" : "us-east-1a",
+          "Tags" : [ {"Key" : "Name", "Value" : {"Ref" : "dbSubnetTag"}} ],
+          "VpcId" : {"Ref" : "myVPC"}
+        }
+      },
+      "dbSubnet2" : {
+        "Type" : "AWS::EC2::Subnet",
+        "Properties" : {
+          "CidrBlock" : "10.0.2.0/24",
+          "AvailabilityZone" : "us-east-1b",
+          "Tags" : [ {"Key" : "Name", "Value" : {"Ref" : "dbSubnetTag"}} ],
+          "VpcId" : {"Ref" : "myVPC"}
+        }
+      },
+    "myInternetGateway" : {
+      "Type" : "AWS::EC2::InternetGateway",
+      "Properties" : {
+        "Tags" : [ {"Key" : "Name", "Value" : {"Ref" : "igTag"}}]
+      }
+    },
+
+    "AttachGateway" : {
+      "Type" : "AWS::EC2::VPCGatewayAttachment",
+      "Properties" : {
+        "VpcId" : { "Ref" : "myVPC" },
+        "InternetGatewayId" : { "Ref" : "myInternetGateway" }
+      }
+    },
+    "publicRouteTable" : {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "myVPC" },
+        "Tags" : [ { "Key" : "Name", "Value" : {"Ref" : "publicRouteTableTag"} } ]
+      }
+    },
+    "privateRouteTable" : {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : { "Ref" : "myVPC" },
+        "Tags" : [ { "Key" : "Name", "Value" : {"Ref" : "privateRouteTableTag"} } ]
+      }
+    },
+    "publicRoute" : {
+      "Type" : "AWS::EC2::Route",
+      "DependsOn" : "myInternetGateway",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "publicRouteTable" },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "GatewayId" : { "Ref" : "myInternetGateway" }
+      }
+    },
+    "publicRouteTableSubnetAssociation" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : {"Ref" : "publicRouteTable"},
+        "SubnetId" : {"Ref" : "webSubnet"}
+      }
+    },
+    "publicRouteTableSubnetAssociation2" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : {"Ref" : "publicRouteTable"},
+        "SubnetId" : {"Ref" : "webSubnet2"}
+      }
+    },
+    "privateRouteTableSubnetAssociation1" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : {"Ref" : "privateRouteTable"},
+        "SubnetId" : {"Ref" : "dbSubnet1"}
+      }
+    },
+    "privateRouteTableSubnetAssociation2" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "RouteTableId" : {"Ref" : "privateRouteTable"},
+        "SubnetId" : {"Ref" : "dbSubnet2"}
+      }
+    },
+
+    "ec2Instance" : {
+         "Type" : "AWS::EC2::Instance",
+          "Properties" : {
+            "SubnetId" : {"Fn::ImportValue" : "csye6225-cloud-Networking-web-subnet"},
+            "ImageId" : "ami-9887c6e7",
+            "KeyName" : { "Ref" : "keyTag" },
+            "InstanceType" : "t2.micro",
+            "BlockDeviceMappings": [
+             {
+               "DeviceName" : "/dev/sda1",
+               "Ebs" : {
+                 "DeleteOnTermination": true,
+                 "VolumeType": "gp2",
+                 "VolumeSize": "20"
+               }
+             }
+           ],
+            "SecurityGroupIds" : [{"Fn::ImportValue" : "csye6225-cloud-Networking-web-security-group"}]
+
+        }
+
+
+    }
+  }
+}
