@@ -39,3 +39,8 @@ Build and Deploy instructions for web application:
 9. In the 'authorization' section, select 'Basic Auth'
 10. Enter the credentials provided in step 8 and click 'Send'
 11. If the credentials are correct, the current timestamp is shown in the window below
+12. For creating a new transaction, go to URL "https:localhost:8080/user/transaction"
+13. Enter all the specifications of that transaction and send the request
+14. For updating the previous transaction, go to "https:localhost:8080/user/transaction/{id}". The {id} must have the transaction id when the transaction was created. Also use PUT method
+15. For getting all the transactions of the user, use the GET method and go to "https:localhost:8080/user/transactions"
+16. For deleting a particular transaction, go to "https:localhost:8080/user/transaction/{id}". The {id} must have the transaction id to be deleted. Also use DELETE method for deleting a transaction
