@@ -62,10 +62,12 @@ public class HomeController {
     	jo.addProperty("message", "Account already exist !");
     } else {
       User createUser = new User();
+      createUser.setId(user.getId());
       createUser.setEmail(user.getEmail());
       createUser.setPassword(user.getPassword());
       userService.saveUser(createUser);
       jo.addProperty("message", "Account created successfully");
+      jo.addProperty("id", createUser.getId());
       jo.addProperty("email", createUser.getEmail());
       jo.addProperty("password", createUser.getPassword());
     }

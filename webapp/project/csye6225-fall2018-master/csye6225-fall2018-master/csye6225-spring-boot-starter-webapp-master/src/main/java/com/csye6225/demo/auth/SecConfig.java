@@ -42,6 +42,9 @@ public class SecConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .antMatchers("/user/register").permitAll()
             .antMatchers("/time").permitAll()
+            .antMatchers("/user/transaction").permitAll()
+            .antMatchers("/user/transactions").permitAll()
+            .antMatchers("/user/transaction/{id}").permitAll()
             .anyRequest().authenticated();
 
   }
