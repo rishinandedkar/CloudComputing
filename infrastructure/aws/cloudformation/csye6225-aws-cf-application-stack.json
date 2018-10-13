@@ -1,0 +1,166 @@
+{
+"AWSTemplateFormatVersion" : "2010-09-09",
+  "Parameters": {
+    "vpcTag": {
+      "Type": "String"
+    },
+    "stackName":{
+      "Type":"String"
+    },
+    "igTag" : {
+      "Type" : "String"
+    },
+    "publicRouteTableTag" : {
+      "Type" : "String"
+    },
+    "privateRouteTableTag" : {
+      "Type" : "String"
+    },
+    "webSubnetTag" : {
+      "Type" : "String"
+    },
+    "dbSubnetTag" : {
+      "Type" : "String"
+    },
+    "webServerSecurityGroupNameTag":
+    {
+      "Type" : "String"
+    },
+    "dbSecurityGroupNameTag" : {
+      "Type" : "String"
+    },
+    "s3Domain" : {
+    "Type" : "String"
+  }
+
+  },
+  "Resources" : {
+
+     "webServerSecurityGroup": {
+       "Type": "AWS::EC2::SecurityGroup",
+       "Properties": {
+       "GroupName": {"Ref" : "webServerSecurityGroupNameTag"},
+       "GroupDescription": "Enable HTTP access via port 80, SSH access via port 22",
+       "SecurityGroupIngress": [
+           {
+             "IpProtocol":"tcp",
+             "FromPort":"443",
+             "ToPort":"443",
+             "CidrIp": "0.0.0.0/0"
+           },
+           {
+             "IpProtocol":"tcp",
+             "FromPort":"80",
+             "ToPort":"80",
+             "CidrIp": "0.0.0.0/0"
+           },
+           {
+             "IpProtocol":"tcp",
+             "FromPort":"22",
+             "ToPort":"22",
+             "CidrIp": "0.0.0.0/0"
+           }
+         ],
+         "VpcId" : {"Fn::ImportValue" : "csye6225-cloud-Networking-VPC"}
+       }
+     },
+     "dbSecurityGroup" : {
+
+      "Type" : "AWS::EC2::SecurityGroup",
+        "Properties" : {
+          "GroupName" : {"Ref" : "dbSecurityGroupNameTag"},
+          "GroupDescription" : "Security tag for web server",
+          "SecurityGroupIngress" : [
+            {
+              "SourceSecurityGroupId" : {"Ref":"webServerSecurityGroup"},
+              "FromPort" : 3306,
+              "IpProtocol" : "tcp",
+              "ToPort" : 3306
+            }
+           ],
+          "VpcId" :{"Fn::ImportValue" : "csye6225-cloud-Networking-VPC"}
+       }
+     },
+
+ "DBSubnetGroup" : {
+  "Type" : "AWS::RDS::DBSubnetGroup",
+  "Properties" : {
+     "DBSubnetGroupDescription" : "DB Subnet Group",
+     "DBSubnetGroupName" : {"Fn::Join" : ["",[{"Ref" : "stackName"},"-csye6225-db-subnetgroup"]] },
+     "SubnetIds" : [ {"Fn::ImportValue" : "csye6225-cloud-Networking-db-subnet1Id"},{"Fn::ImportValue" : "csye6225-cloud-Networking-db-subnet2Id"}]}
+
+},
+
+
+
+    "ec2Instance" : {
+         "Type" : "AWS::EC2::Instance",
+          "Properties" : {
+            "SubnetId" : {"Fn::ImportValue" : "csye6225-cloud-Networking-web-subnet1"},
+            "ImageId" : "ami-9887c6e7",
+            "InstanceType" : "t2.micro",
+            "BlockDeviceMappings": [
+             {
+               "DeviceName" : "/dev/sda1",
+               "Ebs" : {
+                 "VolumeType": "gp2",
+                 "DeleteOnTermination" : "true",
+                 "VolumeSize": "20"
+               }
+             }
+           ],
+            "SecurityGroupIds" : [{"Ref":"webServerSecurityGroup"}]
+        }
+    },
+
+  "S3" : {
+     "Type" : "AWS::S3::Bucket",
+     "Properties" : {
+       "BucketName" :{"Ref" : "s3Domain"},
+     }
+     },
+     "DynamoDBTable": {
+     "Type" : "AWS::DynamoDB::Table",
+     "Properties" : {
+       "AttributeDefinitions" : [
+         {"AttributeName" : "id", "AttributeType" : "S"}
+       ],
+       "KeySchema" : [
+         {"AttributeName" : "id", "KeyType" : "HASH"}
+       ],
+       "ProvisionedThroughput" : {
+         "ReadCapacityUnits" : 2,
+         "WriteCapacityUnits" : 2
+       },
+
+       "TableName": {"Fn::Join" : ["",[{"Ref" : "stackName"},"-csye6225-dynamodb-table"]] }
+     }
+   },
+
+      "RDSDB" :{
+        "Type" : "AWS::RDS::DBInstance",
+        "Properties" :
+          {
+            "AllocatedStorage" : "5",
+            "DBInstanceClass" : "db.t2.medium",
+            "DBInstanceIdentifier" :{"Fn::Join" : ["",[{"Ref" : "stackName"},"-csye6225-fall2018-db-instance"]] },
+            "DBSubnetGroupName" :{"Ref" : "DBSubnetGroup"},
+            "DBName" : "csye6225",
+            "Engine" : "mysql",
+            "EngineVersion" : "5.6.37",
+            "MasterUsername" : "csye6225master",
+            "MasterUserPassword" : "csye6225password",
+            "MultiAZ" : "false",
+            "PubliclyAccessible" : "false",
+            "VPCSecurityGroups": [{"Ref": "dbSecurityGroup"}]
+          }
+      },
+
+
+
+
+
+
+
+  }
+}
