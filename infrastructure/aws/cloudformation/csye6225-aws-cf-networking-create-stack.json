@@ -19,7 +19,10 @@
     "dbSubnetTag" : {
       "Type" : "String"
     },
-    "keyTag" : {
+    "webServerSecurityGroupNameTag" : {
+      "Type" : "String"
+    },
+    "dbSecurityGroupNameTag" : {
       "Type" : "String"
     }
   },
@@ -77,7 +80,6 @@
         "Tags" : [ {"Key" : "Name", "Value" : {"Ref" : "igTag"}}]
       }
     },
-
     "AttachGateway" : {
       "Type" : "AWS::EC2::VPCGatewayAttachment",
       "Properties" : {
@@ -126,38 +128,119 @@
       "Type" : "AWS::EC2::SubnetRouteTableAssociation",
       "Properties" : {
         "RouteTableId" : {"Ref" : "privateRouteTable"},
-        "SubnetId" : {"Ref" : "dbSubnet1"}
+    "SubnetId" : {"Ref" : "dbSubnet1"}
       }
     },
     "privateRouteTableSubnetAssociation2" : {
       "Type" : "AWS::EC2::SubnetRouteTableAssociation",
       "Properties" : {
-        "RouteTableId" : {"Ref" : "privateRouteTable"},
-        "SubnetId" : {"Ref" : "dbSubnet2"}
+      "RouteTableId" : {"Ref" : "privateRouteTable"},
+      "SubnetId" : {"Ref" : "dbSubnet2"}
       }
     },
+    "webServerSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+      "GroupName": {"Ref" : "webServerSecurityGroupNameTag"},
+      "GroupDescription": "Enable HTTP access via port 80, SSH access via port 22",
+        "VpcId": {
+          "Ref": "myVPC"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol":"tcp",
+            "FromPort":"443",
+            "ToPort":"443",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol":"tcp",
+            "FromPort":"8080",
+            "ToPort":"8080",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol":"tcp",
+            "FromPort":"80",
+            "ToPort":"80",
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol":"tcp",
+            "FromPort":"22",
+            "ToPort":"22",
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    },
+ "dbSecurityGroup" : {
 
-    "ec2Instance" : {
-         "Type" : "AWS::EC2::Instance",
-          "Properties" : {
-            "SubnetId" : {"Fn::ImportValue" : "csye6225-cloud-Networking-web-subnet"},
-            "ImageId" : "ami-9887c6e7",
-            "InstanceType" : "t2.micro",
-            "BlockDeviceMappings": [
-             {
-               "DeviceName" : "/dev/sda1",
-               "Ebs" : {
-                 "DeleteOnTermination": true,
-                 "VolumeType": "gp2",
-                 "VolumeSize": "20"
-               }
-             }
-           ],
-            "SecurityGroupIds" : [{"Fn::ImportValue" : "csye6225-cloud-Networking-web-security-group"}]
-
+  "Type" : "AWS::EC2::SecurityGroup",
+    "Properties" : {
+      "GroupName" : {"Ref" : "dbSecurityGroupNameTag"},
+      "GroupDescription" : "Security tag for web server",
+      "SecurityGroupIngress" : [
+        {
+          "SourceSecurityGroupId" : {"Ref" : "webServerSecurityGroup"},
+          "FromPort" : 3306,
+          "IpProtocol" : "tcp",
+          "ToPort" : 3306
         }
-
-
+       ],
+      "VpcId" : {"Ref" : "myVPC"}
+   }
+ }
+  },
+  "Outputs" : {
+    "dbSubnet1Id" : {
+      "Description" : "The ID of the db subnet1",
+      "Value" : { "Ref" : "dbSubnet1" },
+      "Export" : {
+        "Name" : "csye6225-cloud-Networking-db-subnet1Id"
+      }
+    },
+    "dbSubnet2Id" : {
+      "Description" : "The ID of the db subnet 2",
+      "Value" : { "Ref" : "dbSubnet2" },
+      "Export" : {
+        "Name" : "csye6225-cloud-Networking-db-subnet2Id"
+      }
+    },
+    "webSubnetId" : {
+      "Description" : "The ID of web subnet",
+      "Value" : {"Ref" : "webSubnet"},
+      "Export" : {
+        "Name" : "csye6225-cloud-Networking-web-subnet"
+      }
+    },
+    "webSubnetId2" : {
+      "Description" : "The ID of web subnet",
+      "Value" : {"Ref" : "webSubnet2"},
+      "Export" : {
+        "Name" : "csye6225-cloud-Networking-web-subnet2"
+      }
+    },
+    "myvpcID" : {
+      "Description" : "The ID of vpc",
+      "Value" : {"Ref" : "myVPC"},
+      "Export" : {
+        "Name" : "csye6225-cloud-Networking-VPC"
+      }
+    },
+    "webServerSecurityGroupId" : {
+      "Description" : "The ID of web server security group",
+      "Value" : {"Ref" : "webServerSecurityGroup"},
+      "Export" : {
+        "Name" : "csye6225-cloud-Networking-web-security-group"
+      }
+    },
+    "dbSecurityGroupId" : {
+      "Description" : "The ID of web server security group",
+      "Value" : {"Ref" : "dbSecurityGroup"},
+      "Export" : {
+        "Name" : "csye6225-cloud-Networking-db-security-group"
+      }
     }
   }
 }

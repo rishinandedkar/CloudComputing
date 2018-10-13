@@ -27,6 +27,9 @@ public class SecConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   @Qualifier("dataSource")
   private DataSource dataSource;
+  
+  @Autowired
+  private BasicAuthEntryPoint basicAuthEntryPoint;
 
 
   @Value("${spring.queries.users-query}")
@@ -45,6 +48,8 @@ public class SecConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/user/transaction").permitAll()
             .antMatchers("/user/transactions").permitAll()
             .antMatchers("/user/transaction/{id}").permitAll()
+            .antMatchers("/user/transaction/{id}/attachments").permitAll()
+            .antMatchers("/user/transaction/{id}/attachments/{idAttachments}").permitAll()
             .anyRequest().authenticated();
 
   }

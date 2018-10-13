@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import com.csye6225.demo.service.UserService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Base64;
@@ -23,6 +25,7 @@ public class HomeController {
   @Autowired
   private UserService userService;
 
+  
 
   @RequestMapping(value="/time", method= RequestMethod.GET, produces= "application/json")
   @ResponseBody

@@ -5,6 +5,9 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -30,7 +33,8 @@ public class Transaction {
     private String category;
 
 
-
+    @OneToMany(mappedBy = "transaction", cascade = CascadeType.REMOVE)
+    private List<ReceiptUpload> receipts = new ArrayList<>();
     
    
     @ManyToOne
@@ -102,6 +106,14 @@ public class Transaction {
     public void setUser(User user) {
         this.user = user;
     }
+
+	public List<ReceiptUpload> getReceipts() {
+		return receipts;
+	}
+
+	public void setReceipts(List<ReceiptUpload> receipts) {
+		this.receipts = receipts;
+	}
     
     
     
