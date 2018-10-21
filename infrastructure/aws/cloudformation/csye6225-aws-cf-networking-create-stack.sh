@@ -18,13 +18,12 @@ echo $vpcTag
 stackId=$(aws cloudformation create-stack --stack-name $stackName --template-body \
  file://csye6225-aws-cf-networking-create-stack.json --parameters \
 ParameterKey=vpcTag,ParameterValue=$vpcTag \
+ParameterKey=stackName,ParameterValue=$stackName \
 ParameterKey=igTag,ParameterValue=$stackName$csye_const$ig_const \
 ParameterKey=publicRouteTableTag,ParameterValue=$stackName$csye_const$public_route_table_const \
 ParameterKey=privateRouteTableTag,ParameterValue=$stackName$csye_const$private_route_table_const \
 ParameterKey=webSubnetTag,ParameterValue=$stackName$csye_const$web_subnet_tag \
 ParameterKey=dbSubnetTag,ParameterValue=$stackName$csye_const$db_subnet_tag \
-ParameterKey=webServerSecurityGroupNameTag,ParameterValue=$stackName$csye_const$ws_security_group \
-ParameterKey=dbSecurityGroupNameTag,ParameterValue=$stackName$csye_const$db_security_group \
 --query [StackId] --output text)
 echo $stackId
 if [ -z $stackId ]; then
