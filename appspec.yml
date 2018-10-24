@@ -3,7 +3,7 @@ os: linux
 
 files:             
   - source: ./webapp/build/libs/ROOT.war
-    destination: /opt/tomcat/webapps
+    destination: /opt/tomcat8/webapps
 
 hooks:
   AfterInstall:
@@ -14,6 +14,10 @@ hooks:
    - location: ./applicationStart.sh
      timeout: 180
      runas: centos
+   ApplicationStop:
+   - location: ./applicationStop.sh
+     timeout: 180
+     runas: centos   
   # ValidateService:
   #  - location: ./validateService.sh
   #    timeout: 180
