@@ -2,11 +2,18 @@ package com.csye6225.demo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.*;
+
+import org.hibernate.validator.constraints.Email;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"id"},
         allowGetters = true)
 public class User {
@@ -16,11 +23,15 @@ public class User {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private long id;
 
+    @OneToMany(mappedBy = "user")
+    List<Transaction> transactions = new ArrayList<>();
+    
     private String password;
     @Column(unique = true)
+    @Email(regexp="^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",message="please enter a valid email address")
     private String email;
 
-
+    
     public User() {}
 
     public User(String password, String email) {
@@ -53,5 +64,15 @@ public class User {
         this.password = password;
     }
 
+	public List<Transaction> getTransactions() {
+		return transactions;
+	}
+
+	public void setTransactions(List<Transaction> transactions) {
+		this.transactions = transactions;
+	}
+
+	
+	
    
 }

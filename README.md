@@ -46,4 +46,4 @@ Build and Deploy instructions for web application:
 16. For deleting a particular transaction, go to "https:localhost:8080/user/transaction/{id}". The {id} must have the transaction id to be deleted. Also use DELETE method for deleting a transaction
 17. For adding a new .jpg, .png, .jpeg file, go to "https:localhost:8080/user/transaction/{id}/attachments" .Method should be "POST". Select the form-data in input  and choose the file from the local machine. Then hit Send.
 18. For updating the file, go to "https:localhost:8080/user/transaction/{id}/attachments/attachmentId". Method should be "PUT". THen repeat the process from step 17 and hit Send.
-19. For deleting the file, go to ""https:localhost:8080/user/transaction/{id}/attachments/attachmentId" .Method should be "DELETE".  
+19. For deleting the file, go to ""https:localhost:8080/user/transaction/{id}/attachments/attachmentId" .Method should be "DELETE".
