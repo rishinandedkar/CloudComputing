@@ -8,7 +8,7 @@ install: true
 script:
   - ./gradlew assemble
   - ./gradlew check
-  - ./csye6225-spring-boot-starter-webapp-master/build.gradle
+  - ./gradlew build
   - cd webapp
   - -Dskip.tests=true
   - ./gradlew war
@@ -17,7 +17,7 @@ script:
   - cd ../../..
   - pwd
   - ls -al
-  
+  	
   after_success:
   - pwd
   - ls -al
