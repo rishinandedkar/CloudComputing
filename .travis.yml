@@ -6,9 +6,8 @@ sudo: false
 install: true
 
 script:
-  - ./webapp/gradlew build
+  - pwd
   - cd webapp
-  - ./gradlew test
   - ./gradlew war
   - cd build/libs
   - ls -al
