@@ -7,13 +7,8 @@ install: true
 
 script:
   - pwd
-  - cd webapp/project
-  - ./gradlew war
-  - cd build/libs
-  - ls -al
-  - cd ../../../../..
-  - pwd
-  - ls -al
+  - cd ./webapp//project/csye6225-fall2018-master/csye6225-fall2018-master/csye6225-spring-boot-starter-webapp-master
+  - "./gradlew build"
   	
   after_success:
   - pwd
