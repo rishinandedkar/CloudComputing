@@ -6,11 +6,9 @@ sudo: false
 install: true
 
 script:
-  - ./gradlew assemble
-  - ./gradlew check
-  - ./gradlew build
+  - ./webapp/gradlew build
   - cd webapp
-  - -Dskip.tests=true
+  - ./gradlew test
   - ./gradlew war
   - cd build/libs
   - ls -al
