@@ -7,10 +7,9 @@ install: true
 
 script:
   - ./gradlew assemble
-  - gradle check
+  - ./gradlew check
   - ./webapp/gradlew build
   - cd webapp
-  - -Dskip.tests=true
   - ./gradlew war
   - cd build/libs
   - ls -al
