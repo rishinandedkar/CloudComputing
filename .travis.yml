@@ -43,7 +43,7 @@ deploy:
     access_key_id: $access_key_id
     secret_access_key: $secret_access_key
     on:
-      branch: master
+      all_branches: true
 
   - provider: codedeploy
     access_key_id: $access_key_id
@@ -56,4 +56,4 @@ deploy:
     deployment_group: $deployment_group
     wait-until-deployed: true
     on:
-      branch: master
+      all_branches: true
