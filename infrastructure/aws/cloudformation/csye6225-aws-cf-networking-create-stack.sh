@@ -16,7 +16,7 @@ vpcTag=$stackName$csye_const$vpc_const
 echo $vpcTag
 
 stackId=$(aws cloudformation create-stack --stack-name $stackName --template-body \
- file://csye6225-aws-cf-networking-create-stack.json --parameters \
+ file://network.json --parameters \
 ParameterKey=vpcTag,ParameterValue=$vpcTag \
 ParameterKey=stackName,ParameterValue=$stackName \
 ParameterKey=igTag,ParameterValue=$stackName$csye_const$ig_const \
