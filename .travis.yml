@@ -6,7 +6,7 @@ sudo: false
 install: true
 
 script:
-  - ./gaurisarpotdar/csye6225/dev/csye6225-fall2018/webapp/project/csye6225-fall2018-master/csye6225-fall2018-master/csye6225-spring-boot-starter-webapp-master/gradlew build
+  - ./gradlew build
   - cd webapp
   - ./gradlew test
   - ./gradlew war
