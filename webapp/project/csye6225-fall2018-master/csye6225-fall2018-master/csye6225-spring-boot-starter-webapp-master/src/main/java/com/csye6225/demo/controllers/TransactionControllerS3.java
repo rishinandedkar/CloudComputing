@@ -63,7 +63,7 @@ public class TransactionControllerS3 {
 	@Autowired
 	private AmazonS3 s3Client;
 	
-	private String bucketName = "mansicsye6225";
+	private String bucketName = "csye6225-fall2018-sarpotdarg.me";
 
 	@Autowired
 	private UserService userService;

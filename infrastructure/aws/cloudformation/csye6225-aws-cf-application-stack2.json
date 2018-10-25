@@ -32,18 +32,10 @@
     "s3Domain" : {
     "Type" : "String"
     },
-    "ec2Subnet" : {
-    "Description" : "Subnet ID for EC2",
-    "Type" : "String"
-    },
-    "ec2SecurityGroup" : {
-    "Description" : "Resource ID for EC2 Security Group",
-    "Type" : "String"
-    },
     "iaminstance" : {
     "Description" : "Instance Profile Name for CodeDeploy to S3",
     "Type" : "String"
-    },
+    }
 
   },
   "Resources" :
@@ -111,7 +103,7 @@
                 "InstanceType": "t2.micro",
                 "DisableApiTermination": "False",
                 "SecurityGroupIds": [{"Ref" : "webServerSecurityGroup"}],
-                "KeyName": "MyEC2Instance",
+                "KeyName": "csye6225",
                 "SubnetId" : {"Fn::ImportValue" : "csye6225-cloud-Networking-web-subnet1"},
                 "Tenancy": "default",
                 "IamInstanceProfile": {"Ref":"iaminstance"},
@@ -171,7 +163,11 @@
                                 "#systemctl start cloudwatch.service",
                                 "#systemctl enable cloudwatch.service",
                                 "systemctl enable tomcat.service",
-                                "systemctl start tomcat.service"
+                                "systemctl start tomcat.service",
+                                "sudo wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install \n",
+                                "sudo chmod +x ./install \n",
+                                "sudo ./install auto \n",
+                                "sudo service codedeploy-agent start \n",
                                 "sudo yum install mysql-server",
                                 "sudo systemctl start mysqld",
                                 "sudo yum update",

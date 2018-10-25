@@ -95,6 +95,7 @@
     "TravisToS3BucketPolicy" : {
       "Type" : "AWS::IAM::ManagedPolicy",
       "Properties" : {
+        "Users":["travis"],
         "ManagedPolicyName" : "TravisToS3BucketPolicy",
         "PolicyDocument" : {
           "Version" : "2012-10-17",
@@ -102,7 +103,8 @@
               {
                   "Effect": "Allow",
                   "Action": [
-                      "s3:PutObject"
+                      "s3:Get*",
+                      "s3:List*"
                   ],
                   "Resource": [
                     {"Fn::Join" : ["",["arn:aws:s3:::",{"Ref" : "s3domain"},"/*"]] }
@@ -151,6 +153,7 @@
     "TravisToCodeDeployPolicy" : {
       "Type" : "AWS::IAM::ManagedPolicy",
       "Properties" : {
+        "Users":["travis"],
         "ManagedPolicyName" : "TravisToCodeDeployPolicy",
         "PolicyDocument" : {
           "Version" : "2012-10-17",
