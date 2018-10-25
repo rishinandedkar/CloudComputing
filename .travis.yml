@@ -8,11 +8,9 @@ install: true
 script:
   - pwd
   - cd webapp
-  - ./gradlew build
+  - ./gradle build
   - ls -al
   - cd ..
-  - pwd
-  - ls -al
   	
   after_success:
   - pwd
