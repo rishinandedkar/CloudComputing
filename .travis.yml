@@ -6,6 +6,8 @@ sudo: false
 install: true
 
 script:
+  - ./gradlew assemble
+  - gradle check
   - ./webapp/gradlew build
   - cd webapp
   - -Dskip.tests=true
