@@ -3,7 +3,6 @@ jdk:
  - oraclejdk8
 
 sudo: false
-
 install: true
 
 #script:
@@ -12,7 +11,7 @@ install: true
 #  - ./gradlew build --scan -s
 #  - ls -al
 #  - cd ..
-  	
+
 #  after_success:
 #  - pwd
 #  - ls -al
