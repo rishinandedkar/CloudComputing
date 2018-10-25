@@ -9,10 +9,8 @@ script:
   - pwd
   - cd webapp
   - ./gradlew build
-  - ./gradlew war
-  - cd build/libs
   - ls -al
-  - cd ../../..
+  - cd ..
   - pwd
   - ls -al
   	
