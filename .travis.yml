@@ -8,7 +8,7 @@ install: true
 script:
   - pwd
   - cd webapp
-  - ./gradle build
+  - ./gradlew build --scan -s
   - ls -al
   - cd ..
   	
