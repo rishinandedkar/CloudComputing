@@ -6,9 +6,15 @@ sudo: false
 install: true
 
 script:
+  - ./webapp/gradlew build
+  - cd webapp
+  - ./gradlew test
+  - ./gradlew war
+  - cd build/libs
+  - ls -al
+  - cd ../../..
   - pwd
-  - cd csye6225-spring-boot-starter-webapp-master
-  - "./gradlew build"
+  - ls -al
   	
   after_success:
   - pwd
