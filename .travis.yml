@@ -10,6 +10,7 @@ install: true
 script:
  - pwd
  - cd webapp
+ - chmod +x gradlew
  - ./gradlew build
  - ls -al
  - cd ..
