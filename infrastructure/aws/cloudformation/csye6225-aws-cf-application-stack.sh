@@ -17,15 +17,14 @@ echo "ENTER THE NAME FOR EC2"
 read ec2Name
 vpcTag=$stackName$csye_const$vpc_const
 echo $vpcTag
-iaminstance="EC2ToS3BucketInstanceProfile"
+iaminstance="instanceprofilename"
 
 stackId=$(aws cloudformation create-stack --stack-name $stackName --template-body \
- file://csye6225-aws-cf-application-stack.json-2 --parameters \
+ file://csye6225-aws-cf-application-stack2.json --parameters \
 ParameterKey=vpcTag,ParameterValue=$vpcTag \
 ParameterKey=stackName,ParameterValue=$stackName \
-ParameterKey=iaminstance,ParameterValue=$iaminstance\
+ParameterKey=iaminstance,ParameterValue=$iaminstance \
 ParameterKey=s3Domain,ParameterValue=$s3Domain \
-ParameterKey=ec2Subnet,ParameterValue=$ec2Subnet \
 ParameterKey=igTag,ParameterValue=stackName$csye_const$ig_const \
 ParameterKey=publicRouteTableTag,ParameterValue=$stackName$csye_const$public_route_table_const \
 ParameterKey=privateRouteTableTag,ParameterValue=$stackName$csye_const$private_route_table_const \
