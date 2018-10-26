@@ -109,7 +109,8 @@
                   "Action": [
                       "s3:Get*",
                       "s3:List*",
-                      "s3:PutObject*"
+                      "s3:PutObject*",
+                      "s3:PutObjectAcl"
                   ],
                   "Resource": [
                     {"Fn::Join" : ["",["arn:aws:s3:::",{"Ref" : "s3domain"},"/*"]] }
