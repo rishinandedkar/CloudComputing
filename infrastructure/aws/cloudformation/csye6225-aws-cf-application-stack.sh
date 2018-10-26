@@ -17,7 +17,7 @@ echo "ENTER THE NAME FOR EC2"
 read ec2Name
 vpcTag=$stackName$csye_const$vpc_const
 echo $vpcTag
-iaminstance="EC2ToS3BucketInstanceProfile"
+iaminstance="instanceprofilename"
 
 stackId=$(aws cloudformation create-stack --stack-name $stackName --template-body \
  file://csye6225-aws-cf-application-stack2.json --parameters \
