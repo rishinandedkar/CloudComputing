@@ -38,7 +38,7 @@
     "EC2ToS3BucketPolicy" : {
       "Type" : "AWS::IAM::Policy",
       "Properties" : {
-        "ManagedPolicyName" : "EC2ToS3BucketPolicy",
+        "PolicyName" : "EC2ToS3BucketPolicy",
         "PolicyDocument" : {
           "Version" : "2012-10-17",
           "Statement" : [
@@ -100,7 +100,7 @@
       "Type" : "AWS::IAM::Policy",
       "Properties" : {
         "Users":["travis"],
-        "ManagedPolicyName" : "TravisToS3BucketPolicy",
+        "PolicyName" : "TravisToS3BucketPolicy",
         "PolicyDocument" : {
           "Version" : "2012-10-17",
           "Statement": [
@@ -159,7 +159,7 @@
       "Type" : "AWS::IAM::Policy",
       "Properties" : {
         "Users":["travis"],
-        "ManagedPolicyName" : "TravisToCodeDeployPolicy",
+        "PolicyName" : "TravisToCodeDeployPolicy",
         "PolicyDocument" : {
           "Version" : "2012-10-17",
           "Statement": [
@@ -170,7 +170,7 @@
                       "codedeploy:GetApplicationRevision"
                   ],
                   "Resource": [
-                       {"Fn::Join" : ["",["arn:aws:codedeploy:us-east-1:",{"Ref" : "accid"},":application:csye6225CodeDeployApplication"]]}
+                       {"Fn::Join" : ["",["arn:aws:codedeploy:us-east-1:",{"Ref" : "accid"},":application:APPLICATION_NAME"]]}
                   ]
               },
               {
