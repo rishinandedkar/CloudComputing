@@ -117,11 +117,7 @@
               }
           ]
         },
-        "Roles" : [
-          {
-            "Ref" : "TravisToS3BucketRole"
-          }
-        ]
+
       }
     },
     "TravisToS3BucketRole" : {
@@ -196,11 +192,7 @@
               }
           ]
         },
-        "Roles" : [
-          {
-            "Ref" : "TravisToCodeDeployRole"
-          }
-        ]
+        
       }
     },
     "TravisToCodeDeployRole" : {
