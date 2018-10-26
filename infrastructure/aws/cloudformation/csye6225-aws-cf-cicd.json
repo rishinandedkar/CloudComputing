@@ -36,7 +36,7 @@
       }
     },
     "EC2ToS3BucketPolicy" : {
-      "Type" : "AWS::IAM::ManagedPolicy",
+      "Type" : "AWS::IAM::Policy",
       "Properties" : {
         "ManagedPolicyName" : "EC2ToS3BucketPolicy",
         "PolicyDocument" : {
@@ -81,19 +81,9 @@
         "Path" : "/"
       }
     },
-    "TravisToS3BucketInstanceProfile" : {
-      "Type" : "AWS::IAM::InstanceProfile",
-      "Properties" : {
-        "Path" : "/",
-        "Roles" : [
-          {
-            "Ref" : "TravisToS3BucketRole"
-          }
-        ]
-      }
-    },
+
     "TravisToS3BucketPolicy" : {
-      "Type" : "AWS::IAM::ManagedPolicy",
+      "Type" : "AWS::IAM::Policy",
       "Properties" : {
         "Users":["travis"],
         "ManagedPolicyName" : "TravisToS3BucketPolicy",
@@ -104,7 +94,8 @@
                   "Effect": "Allow",
                   "Action": [
                       "s3:Get*",
-                      "s3:List*"
+                      "s3:List*",
+                      "s3:PutObject*"
                   ],
                   "Resource": [
                     {"Fn::Join" : ["",["arn:aws:s3:::",{"Ref" : "s3domain"},"/*"]] }
@@ -151,7 +142,7 @@
       }
     },
     "TravisToCodeDeployPolicy" : {
-      "Type" : "AWS::IAM::ManagedPolicy",
+      "Type" : "AWS::IAM::Policy",
       "Properties" : {
         "Users":["travis"],
         "ManagedPolicyName" : "TravisToCodeDeployPolicy",
