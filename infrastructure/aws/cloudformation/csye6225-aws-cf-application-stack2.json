@@ -36,7 +36,6 @@
     "Description" : "Instance Profile Name for CodeDeploy to S3",
     "Type" : "String"
     }
-
   },
   "Resources" :
   {
@@ -224,7 +223,11 @@
             "PubliclyAccessible" : "false",
             "VPCSecurityGroups": [{"Ref": "dbSecurityGroup"}]
           }
-      }
+      },
+
+
+
+
   },
 
   "Outputs": {

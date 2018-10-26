@@ -1,15 +1,29 @@
 #!/bin/bash
-stack_name=$1
-bucket_name=$2
+#Variables
 
-aws cloudformation create-stack --stack-name $stack_name --template-body file://csye6225-aws-cf-cicd.json --capabilities CAPABILITY_NAMED_IAM --parameters ParameterKey=S3Bucket,ParameterValue=$bucket_name
+stackname=$1
+appname=$2
+depname=$3
+domain=$(aws route53 list-hosted-zones --query HostedZones[0].Name --output text)
+trimdomain=${domain::-1}
+s3domain="code-deploy.$trimdomain"
+echo "S3 Domain: $s3domain"
+accid=$(aws sts get-caller-identity --output text --query 'Account')
+echo "AccountId: $accid"
 
+
+
+createOutput=$(aws cloudformation create-stack --stack-name $stackname --capabilities CAPABILITY_NAMED_IAM --template-body file://csye6225-aws-cf-cicd.json --parameters ParameterKey=s3domain,ParameterValue=$s3domain ParameterKey=accid,ParameterValue=$accid ParameterKey=depname,ParameterValue=$depname ParameterKey=appname,ParameterValue=$appname)
 
 
 if [ $? -eq 0 ]; then
-  echo "Creating progress"
-  aws cloudformation wait stack-create-complete --stack-name $stack_name
-  echo "Stack created successfully"
+	echo "Creating stack..."
+	aws cloudformation wait stack-create-complete --stack-name $stackname
+	echo "Stack created successfully. Stack Id below: "
+
+	echo $createOutput
+
 else
-  echo "Failure while creating stack"
-fi
+	echo "Error in creation of stack"
+	echo $createOutput
+fi;
