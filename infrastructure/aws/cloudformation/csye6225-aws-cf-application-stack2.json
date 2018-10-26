@@ -35,23 +35,7 @@
     "iaminstance" : {
     "Description" : "Instance Profile Name for CodeDeploy to S3",
     "Type" : "String"
-    },
-    "appname" : {
-    "Description" : "Application Name",
-    "Type" : "String"
-
-    },
-    "depname" : {
-    "Description" : "Deployment Group Name",
-    "Type" : "String"
-
-    },
-   "CodeDeployServiceRole" : {
-   "Description" : "Application Name",
-   "Type" : "String"
-
-    },
-
+    }
   },
   "Resources" :
   {
@@ -241,28 +225,6 @@
           }
       },
 
-
-    "CodeDeployApplication": {
-          "Type": "AWS::CodeDeploy::Application",
-          "Properties": {
-            "ApplicationName" : {"Ref" : "appname"}
-          }
-        },
-
-    "CodeDeployDeploymentGroup": {
-     "Type": "AWS::CodeDeploy::DeploymentGroup",
-     "Properties": {
-       "ApplicationName" : {"Ref" : "appname"},
-       "Ec2TagFilters" : [{
-         "Key" : "Name",
-         "Value" : "MyEC2Instance",
-         "Type" : "KEY_AND_VALUE"
-       }],
-
-       "ServiceRoleArn" : {"Ref" : "CodeDeployServiceRole"},
-       "DeploymentGroupName" : {"Ref" : "depname"}
-     }
-   },
 
 
 
