@@ -17,7 +17,16 @@ echo "ENTER THE NAME FOR EC2"
 read ec2Name
 vpcTag=$stackName$csye_const$vpc_const
 echo $vpcTag
-iaminstance="instanceprofilename"
+iaminstance="EC2ToS3BucketInstanceProfile"
+keyName="csye6225"
+appname="csye6225CodeDeployApplication"
+depname="csye6225CodeDeployApplication-depgroup"
+cdeployRole=$(aws iam get-role --role-name CodeDeployServiceRole --query Role.Arn --output text)
+echo "CodeDeployServiceRole: $cdeployRole"
+
+
+
+
 
 stackId=$(aws cloudformation create-stack --stack-name $stackName --template-body \
  file://csye6225-aws-cf-application-stack2.json --parameters \
@@ -32,6 +41,9 @@ ParameterKey=webSubnetTag,ParameterValue=$csye_const$web_subnet_tag \
 ParameterKey=dbSubnetTag,ParameterValue=$csye_const$db_subnet_tag \
 ParameterKey=webServerSecurityGroupNameTag,ParameterValue=$stackName$csye_const$ws_security_group \
 ParameterKey=dbSecurityGroupNameTag,ParameterValue=$stackName$csye_const$db_security_group \
+ParameterKey=appname,ParameterValue=$appname \
+ParameterKey=depname,ParameterValue=$depname \
+ParameterKey=CodeDeployServiceRole,ParameterValue=$cdeployRole \
 --query [StackId] --output text)
 echo $stackId
 if [ -z $stackId ]; then
