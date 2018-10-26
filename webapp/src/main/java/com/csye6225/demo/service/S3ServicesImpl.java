@@ -27,7 +27,7 @@ public class S3ServicesImpl implements S3Services{
     private AmazonS3 s3client;
 
 
-    private String bucketName = "csye6225-fall2018-sarpotdarg.me";
+    private String bucketName = "code-deploy.csye6225-fall2018-sarpotdarg.me.csye6225.com";
 
 
     @Override
@@ -47,7 +47,7 @@ public class S3ServicesImpl implements S3Services{
     @Override
     public void deleteReceiptFromS3(String key) {
         try{
-          s3client.deleteObject("csye6225-fall2018-sarpotdarg.me", key);
+          s3client.deleteObject("code-deploy.csye6225-fall2018-sarpotdarg.me.csye6225.com", key);
        //s3client.deleteObject(new DeleteObjectRequest("rishicsye6225", key));
         }
         catch(Exception ex){
