@@ -112,7 +112,7 @@
                       "s3:PutObject*"
                   ],
                   "Resource": [
-                    {"Fn::Join" : ["",["arn:aws:s3:::",{"Ref" : "s3domain"},"/*"]] }
+                    {"Fn::Join" : ["",["arn:aws:s3:::","code-deploy.csye6225-fall2018-sarpotdarg.me","/*"]] }
                   ]
               }
           ]
@@ -236,13 +236,13 @@
         "Type" : "AWS::S3::Bucket",
         "Properties" :
         {
-          "BucketName" : {"Ref" : "s3domain"}
+          "BucketName" : "code-deploy.csye6225-fall2018-sarpotdarg.me"
         }
     },
     "CodeDeployApplication": {
       "Type": "AWS::CodeDeploy::Application",
       "Properties": {
-        "ApplicationName" : {"Ref" : "appname"}
+        "ApplicationName" : "APPLICATION_NAME"
       }
     },
      "CodeDeployDeploymentGroup": {
