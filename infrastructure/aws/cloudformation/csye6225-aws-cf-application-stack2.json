@@ -32,19 +32,22 @@
     "s3Domain" : {
     "Type" : "String"
     },
-    "ec2Subnet" : {
-    "Description" : "Subnet ID for EC2",
-    "Type" : "String"
-    },
-    "ec2SecurityGroup" : {
-    "Description" : "Resource ID for EC2 Security Group",
-    "Type" : "String"
-    },
     "iaminstance" : {
     "Description" : "Instance Profile Name for CodeDeploy to S3",
     "Type" : "String"
-    },
-
+  },
+  "DBUsername" : {
+             "Default" : "csye6225master",
+             "Description" : "The database admin account username",
+             "Type": "String",
+             "AllowedPattern" : "[a-zA-Z][a-zA-Z0-9]*"
+         },
+         "DBPassword" : {
+             "Default": "csye6225password",
+             "Description" : "The database admin account password",
+             "Type": "String",
+             "AllowedPattern" : "[a-zA-Z0-9]*"
+         },
   },
   "Resources" :
   {
@@ -54,26 +57,39 @@
        "Properties": {
        "GroupName": {"Ref" : "webServerSecurityGroupNameTag"},
        "GroupDescription": "Enable HTTP access via port 80, SSH access via port 22",
-       "SecurityGroupIngress": [
-           {
-             "IpProtocol":"tcp",
-             "FromPort":"443",
-             "ToPort":"443",
-             "CidrIp": "0.0.0.0/0"
-           },
-           {
-             "IpProtocol":"tcp",
-             "FromPort":"80",
-             "ToPort":"80",
-             "CidrIp": "0.0.0.0/0"
-           },
-           {
-             "IpProtocol":"tcp",
-             "FromPort":"22",
-             "ToPort":"22",
-             "CidrIp": "0.0.0.0/0"
-           }
-         ],
+       "SecurityGroupIngress" : [{
+                   "IpProtocol" : "tcp",
+                   "FromPort": 22,
+                   "ToPort" : 22,
+                   "CidrIp" : "0.0.0.0/0"
+               },
+               {
+                   "IpProtocol" : "tcp",
+                   "FromPort": 80,
+                   "ToPort" : 80,
+                   "CidrIp" : "0.0.0.0/0"
+               },
+
+               {
+                   "IpProtocol" : "tcp",
+                   "FromPort": 8080,
+                   "ToPort" : 8080,
+                   "CidrIp" : "0.0.0.0/0"
+               },
+
+               {
+                   "IpProtocol" : "tcp",
+                   "FromPort": 443,
+                   "ToPort" : 443,
+                   "CidrIp" : "0.0.0.0/0"
+               },
+               {
+                   "IpProtocol" : "tcp",
+                   "FromPort": 3306,
+                   "ToPort" : 3306,
+                   "CidrIp" : "0.0.0.0/0"
+               }
+               ],
          "VpcId" : {"Fn::ImportValue" : "csye6225-cloud-Networking-VPC"}
        }
      },
@@ -111,7 +127,7 @@
                 "InstanceType": "t2.micro",
                 "DisableApiTermination": "False",
                 "SecurityGroupIds": [{"Ref" : "webServerSecurityGroup"}],
-                "KeyName": "MyEC2Instance",
+                "KeyName": "KeyName",
                 "SubnetId" : {"Fn::ImportValue" : "csye6225-cloud-Networking-web-subnet1"},
                 "Tenancy": "default",
                 "IamInstanceProfile": {"Ref":"iaminstance"},
@@ -134,6 +150,10 @@
                                 "yum install ruby ntp wget java-1.8.0-openjdk-devel -y",
                                 "systemctl start ntpd",
                                 "systemctl enable ntpd",
+                                "cd /home/centos/",
+                                "wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install",
+                                "chmod +x ./install",
+                                "./install auto",
                                 "groupadd tomcat",
                                 "useradd -M -s /bin/nologin -g tomcat -d /opt/tomcat tomcat",
                                 "cd /tmp",
@@ -167,16 +187,36 @@
                                 "echo 'Restart=always' >> tomcat.service",
                                 "echo '[Install]' >> tomcat.service",
                                 "echo 'WantedBy=multi-user.target' >> tomcat.service",
+                                "echo '#!/bin/sh' >> /opt/tomcat/bin/setenv.sh",
+                                {
+                                 "Fn::Join": [
+                                  "",
+                                [
+                                "echo 'JAVA_OPTS=\"$JAVA_OPTS -Durl=\"jdbc:mysql://",
+                                {
+                                 "Fn::GetAtt": [
+                                    "RDSDB",
+                                    "Endpoint.Address"
+                                 ]
+                                 },
+                                  ":3306/csye6225\"\"'>> /opt/tomcat/bin/setenv.sh \n"
+                                     ]
+                  ]
+                },
+                {"Fn::Join":["",["sudo echo \"JAVA_OPTS=\\\"\\${JAVA_OPTS} -Dspring.profiles.active=aws\\\"\" >> /opt/tomcat/bin/setenv.sh "]]},
+                {"Fn::Join":["",["sudo echo \"JAVA_OPTS=\\\"\\${JAVA_OPTS} -DendpointUrl=https://s3.us-east-1.amazonaws.com\\\"\" >> /opt/tomcat/bin/setenv.sh "]]},
+                {"Fn::Join":["",["sudo echo \"JAVA_OPTS=\\\"\\${JAVA_OPTS} -Dfolder=centos\\\"\" >> /opt/tomcat/bin/setenv.sh "]]},
+                {"Fn::Join":["",["sudo echo \"JAVA_OPTS=\\\"\\${JAVA_OPTS} -Dusername=",{"Ref":"DBUsername"},"\\\"\" >> /opt/tomcat/bin/setenv.sh "]]},
+                {"Fn::Join":["",["sudo echo \"JAVA_OPTS=\\\"\\${JAVA_OPTS} -Dpassword=",{"Ref":"DBPassword"},"\\\"\" >> /opt/tomcat/bin/setenv.sh "]]},
+                  {"Fn::Join":["",["sudo echo \"JAVA_OPTS=\\\"\\${JAVA_OPTS} -DbucketName=",{"Ref":"s3Domain"},"\\\"\" >> /opt/tomcat/bin/setenv.sh "]]},
+
+                  "chmod +x /opt/tomcat/bin/setenv.sh",
                                 "systemctl daemon-reload",
                                 "#systemctl start cloudwatch.service",
                                 "#systemctl enable cloudwatch.service",
                                 "systemctl enable tomcat.service",
-                                "systemctl start tomcat.service"
-                                "sudo yum install mysql-server",
-                                "sudo systemctl start mysqld",
-                                "sudo yum update",
-                                "sudo service mysqld restart",
-                                "sudo mysql -u csye6225master -h ${RDSInstance.Endpoint.Address} -p csye6225password"
+                                "systemctl start tomcat.service",
+
                             ]
                         ]
                     }
@@ -203,8 +243,8 @@
          {"AttributeName" : "id", "KeyType" : "HASH"}
        ],
        "ProvisionedThroughput" : {
-         "ReadCapacityUnits" : 2,
-         "WriteCapacityUnits" : 2
+         "ReadCapacityUnits" : 5,
+         "WriteCapacityUnits" : 5
        },
 
        "TableName": {"Fn::Join" : ["",[{"Ref" : "stackName"},"-csye6225-dynamodb-table"]] }
@@ -228,7 +268,11 @@
             "PubliclyAccessible" : "false",
             "VPCSecurityGroups": [{"Ref": "dbSecurityGroup"}]
           }
-      }
+      },
+
+
+
+
   },
 
   "Outputs": {
