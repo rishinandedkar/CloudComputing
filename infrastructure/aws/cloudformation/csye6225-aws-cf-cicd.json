@@ -80,7 +80,7 @@
         },
         "Path" : "/",
 
-      "Policies": [ {
+        "Policies": [ {
       "PolicyName": "CodeDeploy-EC2-S3",
       "PolicyDocument": {
          "Version" : "2012-10-17",
@@ -109,11 +109,10 @@
                   "Action": [
                       "s3:Get*",
                       "s3:List*",
-                      "s3:PutObject*",
-                      "s3:PutObjectAcl"
+                      "s3:PutObject*"
                   ],
                   "Resource": [
-                    {"Fn::Join" : ["",["arn:aws:s3:::",{"Ref" : "s3domain"},"/*"]] }
+                    {"Fn::Join" : ["",["arn:aws:s3:::","code-deploy.csye6225-fall2018-sarpotdarg.me","/*"]] }
                   ]
               }
           ]
@@ -167,7 +166,7 @@
                       "codedeploy:GetApplicationRevision"
                   ],
                   "Resource": [
-                       {"Fn::Join" : ["",["arn:aws:codedeploy:us-east-1:",{"Ref" : "accid"},":application:csye6225CodeDeployApplication"]]}
+                       {"Fn::Join" : ["",["arn:aws:codedeploy:us-east-1:",{"Ref" : "accid"},":application:APPLICATION_NAME"]]}
                   ]
               },
               {
@@ -237,30 +236,28 @@
         "Type" : "AWS::S3::Bucket",
         "Properties" :
         {
-          "BucketName" : {"Ref" : "s3domain"}
+          "BucketName" : "code-deploy.csye6225-fall2018-sarpotdarg.me"
         }
     },
-
     "CodeDeployApplication": {
-          "Type": "AWS::CodeDeploy::Application",
-          "Properties": {
-            "ApplicationName" : {"Ref" : "appname"}
-          }
-        },
-         "CodeDeployDeploymentGroup": {
-          "Type": "AWS::CodeDeploy::DeploymentGroup",
-          "Properties": {
-            "ApplicationName" : {"Ref" : "appname"},
-            "Ec2TagFilters" : [{
-              "Key" : "Name",
-              "Value" : "MyEC2Instance",
-              "Type" : "KEY_AND_VALUE"
-            }],
-            "ServiceRoleArn" : {"Fn::GetAtt" : ["CodeDeployServiceRole", "Arn"]},
-            "DeploymentGroupName" : {"Ref" : "depname"}
-          }
-        }
-
+      "Type": "AWS::CodeDeploy::Application",
+      "Properties": {
+        "ApplicationName" : "APPLICATION_NAME"
+      }
+    },
+     "CodeDeployDeploymentGroup": {
+      "Type": "AWS::CodeDeploy::DeploymentGroup",
+      "Properties": {
+        "ApplicationName" : {"Ref" : "appname"},
+        "Ec2TagFilters" : [{
+          "Key" : "Name",
+          "Value" : "MyEC2Instance",
+          "Type" : "KEY_AND_VALUE"
+        }],
+        "ServiceRoleArn" : {"Fn::GetAtt" : ["CodeDeployServiceRole", "Arn"]},
+        "DeploymentGroupName" : {"Ref" : "depname"}
+      }
+    }
 },
     "Outputs" : {
       "CodeDeployServiceRoleArn" : {
