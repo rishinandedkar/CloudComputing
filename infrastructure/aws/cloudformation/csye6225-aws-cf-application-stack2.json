@@ -47,7 +47,7 @@
              "Description" : "The database admin account password",
              "Type": "String",
              "AllowedPattern" : "[a-zA-Z0-9]*"
-         },
+         }
   },
   "Resources" :
   {
@@ -141,7 +141,7 @@
                         "Fn::Join": [
                             "\n",
                             ["#!/bin/bash -xe ",
-				"sudo su",
+			                        	"sudo su",
                                 "yum install ruby ntp wget java-1.8.0-openjdk-devel -y",
                                 "systemctl start ntpd",
                                 "systemctl enable ntpd",
@@ -210,7 +210,7 @@
                                 "#systemctl start cloudwatch.service",
                                 "#systemctl enable cloudwatch.service",
                                 "systemctl enable tomcat.service",
-                                "systemctl start tomcat.service",
+                                "systemctl start tomcat.service"
 
                             ]
                         ]
@@ -263,7 +263,7 @@
             "PubliclyAccessible" : "false",
             "VPCSecurityGroups": [{"Ref": "dbSecurityGroup"}]
           }
-      },
+      }
 
 
 
