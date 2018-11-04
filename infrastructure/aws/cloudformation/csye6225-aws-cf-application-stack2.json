@@ -198,11 +198,11 @@
                   ]
                 },
                 {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.profiles.active=aws\"' >> /opt/tomcat/bin/setenv.sh\n"]]},
-                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -DendpointUrl=https://s3.us-east-1.amazonaws.com\"' >> /opt/tomcat/bin/setenv.sh\n "]]},
-                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dfolder=centos\"'>> /opt/tomcat/bin/setenv.sh\n "]]},
-                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dusername=",{"Ref":"DBUsername"},"\"'>> /opt/tomcat/bin/setenv.sh\n "]]},
-                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dpassword=",{"Ref":"DBPassword"},"\"'>> /opt/tomcat/bin/setenv.sh\n "]]},
-                  {"Fn::Join":["",["echo 'JAVA_OPTS=\"$JAVA_OPTS -DbucketName=",{"Ref":"s3Domain"},"\"' >> /opt/tomcat/bin/setenv.sh\n "]]},
+                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=",{"Ref":"RDSDB.Endpoint.Address"},"\"' >> /opt/tomcat/bin/setenv.sh\n "]]},
+                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.folder=centos\"'>> /opt/tomcat/bin/setenv.sh\n "]]},
+                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=",{"Ref":"DBUsername"},"\"'>> /opt/tomcat/bin/setenv.sh\n "]]},
+                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=",{"Ref":"DBPassword"},"\"'>> /opt/tomcat/bin/setenv.sh\n "]]},
+                  {"Fn::Join":["",["echo 'JAVA_OPTS=\"$JAVA_OPTS -Dbucket.name=",{"Ref":"s3Domain"},"\"' >> /opt/tomcat/bin/setenv.sh\n "]]},
 
                   "chmod +x /opt/tomcat/bin/setenv.sh",
                                 "systemctl daemon-reload",
