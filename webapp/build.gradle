@@ -8,6 +8,8 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
+    
+    
 }
 
 apply plugin: 'java'
@@ -15,11 +17,12 @@ apply plugin: 'eclipse-wtp'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'war'
 apply plugin: 'idea'
+apply plugin: 'application'
 
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
+mainClassName = 'com.csye6225.demo.DemoApplication'
 repositories {
     mavenCentral()
 }
@@ -27,6 +30,8 @@ repositories {
 configurations {
     providedRuntime
 }
+
+
 
 idea {
     module {
