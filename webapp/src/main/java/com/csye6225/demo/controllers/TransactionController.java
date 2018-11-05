@@ -50,7 +50,7 @@ public class TransactionController {
 	@Autowired
 	private AmazonS3 s3Client;
 	
-	private String bucketName = "csye6225-fall2018-nandedkarr.me";
+	private String bucketName = "csye6225-fall2018-sarpotdarg.me";
 
 	@Autowired
 	private UserService userService;
