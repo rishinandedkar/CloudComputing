@@ -47,7 +47,7 @@
              "Description" : "The database admin account password",
              "Type": "String",
              "AllowedPattern" : "[a-zA-Z0-9]*"
-         },
+         }
   },
   "Resources" :
   {
@@ -61,12 +61,6 @@
                    "IpProtocol" : "tcp",
                    "FromPort": 22,
                    "ToPort" : 22,
-                   "CidrIp" : "0.0.0.0/0"
-               },
-               {
-                   "IpProtocol" : "tcp",
-                   "FromPort": 80,
-                   "ToPort" : 80,
                    "CidrIp" : "0.0.0.0/0"
                },
 
@@ -147,6 +141,7 @@
                         "Fn::Join": [
                             "\n",
                             ["#!/bin/bash -xe ",
+			                        	"sudo su",
                                 "yum install ruby ntp wget java-1.8.0-openjdk-devel -y",
                                 "systemctl start ntpd",
                                 "systemctl enable ntpd",
@@ -192,7 +187,7 @@
                                  "Fn::Join": [
                                   "",
                                 [
-                                "echo 'JAVA_OPTS=\"$JAVA_OPTS -Durl=\"jdbc:mysql://",
+                                "echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=\"jdbc:mysql://",
                                 {
                                  "Fn::GetAtt": [
                                     "RDSDB",
@@ -203,19 +198,19 @@
                                      ]
                   ]
                 },
-                {"Fn::Join":["",["sudo echo \"JAVA_OPTS=\\\"\\${JAVA_OPTS} -Dspring.profiles.active=aws\\\"\" >> /opt/tomcat/bin/setenv.sh "]]},
-                {"Fn::Join":["",["sudo echo \"JAVA_OPTS=\\\"\\${JAVA_OPTS} -DendpointUrl=https://s3.us-east-1.amazonaws.com\\\"\" >> /opt/tomcat/bin/setenv.sh "]]},
-                {"Fn::Join":["",["sudo echo \"JAVA_OPTS=\\\"\\${JAVA_OPTS} -Dfolder=centos\\\"\" >> /opt/tomcat/bin/setenv.sh "]]},
-                {"Fn::Join":["",["sudo echo \"JAVA_OPTS=\\\"\\${JAVA_OPTS} -Dusername=",{"Ref":"DBUsername"},"\\\"\" >> /opt/tomcat/bin/setenv.sh "]]},
-                {"Fn::Join":["",["sudo echo \"JAVA_OPTS=\\\"\\${JAVA_OPTS} -Dpassword=",{"Ref":"DBPassword"},"\\\"\" >> /opt/tomcat/bin/setenv.sh "]]},
-                  {"Fn::Join":["",["sudo echo \"JAVA_OPTS=\\\"\\${JAVA_OPTS} -DbucketName=",{"Ref":"s3Domain"},"\\\"\" >> /opt/tomcat/bin/setenv.sh "]]},
+                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.profiles.active=aws\"'>> /opt/tomcat/bin/setenv.sh\n"]]},
+                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.url=jdbc:mysql://${RDSDB.Endpoint.Address}:3306/csye6225\"' >> /opt/tomcat/bin/setenv.sh\n"]]},
+                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.folder=centos\"' >> /opt/tomcat/bin/setenv.sh\n"]]},
+                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=",{"Ref":"DBUsername"},"\"' >> /opt/tomcat/bin/setenv.sh\n"]]},
+                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=",{"Ref":"DBPassword"},"\"' >> /opt/tomcat/bin/setenv.sh\n"]]},
+                  {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dbucket.name=",{"Ref":"s3Domain"},"\"' >> /opt/tomcat/bin/setenv.sh\n"]]},
 
                   "chmod +x /opt/tomcat/bin/setenv.sh",
                                 "systemctl daemon-reload",
                                 "#systemctl start cloudwatch.service",
                                 "#systemctl enable cloudwatch.service",
                                 "systemctl enable tomcat.service",
-                                "systemctl start tomcat.service",
+                                "systemctl start tomcat.service"
 
                             ]
                         ]
@@ -268,7 +263,7 @@
             "PubliclyAccessible" : "false",
             "VPCSecurityGroups": [{"Ref": "dbSecurityGroup"}]
           }
-      },
+      }
 
 
 
