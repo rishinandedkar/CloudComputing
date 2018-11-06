@@ -87,7 +87,7 @@
          "Statement": [ {
             "Effect": "Allow",
             "Action": ["s3:Get*", "s3:List*"],
-            "Resource": {"Fn::Join" : ["",["arn:aws:s3:::","code-deploy.csye6225-fall2018-nandedkarr.me", "/*"]]}
+            "Resource": {"Fn::Join" : ["",["arn:aws:s3:::",{"Ref" : "s3domain"}, "/*"]]}
          } ]
       }
       } ]
@@ -112,7 +112,7 @@
                       "s3:PutObject*"
                   ],
                   "Resource": [
-                    {"Fn::Join" : ["",["arn:aws:s3:::","code-deploy.csye6225-fall2018-nandedkarr.me","/*"]] }
+                    {"Fn::Join" : ["",["arn:aws:s3:::",{"Ref" : "s3domain"},"/*"]] }
                   ]
               }
           ]
@@ -236,13 +236,13 @@
         "Type" : "AWS::S3::Bucket",
         "Properties" :
         {
-          "BucketName" : "code-deploy.csye6225-fall2018-nandedkarr.me"
+          "BucketName" :{"Ref" : "s3domain"}
         }
     },
     "CodeDeployApplication": {
       "Type": "AWS::CodeDeploy::Application",
       "Properties": {
-        "ApplicationName" : "APPLICATION_NAME"
+        "ApplicationName" :{"Ref" : "appname"}
       }
     },
      "CodeDeployDeploymentGroup": {
