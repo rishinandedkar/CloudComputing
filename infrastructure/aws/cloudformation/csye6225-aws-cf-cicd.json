@@ -242,7 +242,7 @@
     "CodeDeployApplication": {
       "Type": "AWS::CodeDeploy::Application",
       "Properties": {
-        "ApplicationName" : "APPLICATION_NAME"
+        "ApplicationName" :{"Ref" : "appname"}
       }
     },
      "CodeDeployDeploymentGroup": {
