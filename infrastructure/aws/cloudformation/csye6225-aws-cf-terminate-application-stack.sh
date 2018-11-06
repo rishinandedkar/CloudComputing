@@ -9,6 +9,15 @@ if [ -z "$1" ]; then
 	echo "please provide a stack name"
 else
 	stackname=$1
+
+  domain=$(aws route53 list-hosted-zones --query HostedZones[0].Name --output text)
+  trimdomain=${domain::-1}
+  s3domain=$trimdomain
+  #Emptying S3 bucket
+  aws s3 rm s3://$s3domain --recursive
+  #Removing S3 bucket
+
+
 	terminateOutput=$(aws cloudformation delete-stack --stack-name $stackname)
 	if [ $? -eq 0 ]; then
 		echo "Deletion in progress..."
