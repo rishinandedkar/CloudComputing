@@ -43,6 +43,7 @@ public class SecConfig extends WebSecurityConfigurerAdapter {
             .csrf()
             .disable()
             .authorizeRequests()
+            .antMatchers("/resetPassword").permitAll()
             .antMatchers("/user/register").permitAll()
             .antMatchers("/time").permitAll()
             .antMatchers("/user/transaction").permitAll()
