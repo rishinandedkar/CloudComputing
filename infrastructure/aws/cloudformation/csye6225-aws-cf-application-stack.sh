@@ -2,6 +2,7 @@
 
 echo "CREATING STACK with EC2"
 stackName=$1
+s3Domain=$2
 csye_const=-csye6225-
 vpc_const=vpc
 ig_const=InternetGateway
@@ -23,10 +24,11 @@ cdeployRole=$(aws iam get-role --role-name CodeDeployServiceRole --query Role.Ar
 echo "CodeDeployServiceRole: $cdeployRole"
 
 domain=$(aws route53 list-hosted-zones --query HostedZones[0].Name --output text)
-trimdomain=${domain::-1}
-
-s3Domain=$trimdomain
-
+#trimdomain=${domain::-1}
+#echo "trimdomainname:$trimdomain"
+#s3Domain=$trimdomain
+#echo "s3domain:$s3Domain"
+domainname=$s3Domain
 
 
 
