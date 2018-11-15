@@ -110,15 +110,11 @@ public class HomeController {
       } 
       else {
 
-    	  try {
-        AmazonSNSClient awssns = new AmazonSNSClient(new InstanceProfileCredentialsProvider());
-        String topicArn = awssns.createTopic("password_reset").getTopicArn();
-        PublishRequest request = new PublishRequest(topicArn, user.getEmail());
-        PublishResult result = awssns.publish(request);
-    	  } catch(Exception e) {
-    		  jo.addProperty("error",e.getMessage());
-    	  }
-      }
+          AmazonSNSClient sns = new AmazonSNSClient(new InstanceProfileCredentialsProvider(true));
+          String topicArn = sns.createTopic("password_reset").getTopicArn();
+          PublishRequest prequest = new PublishRequest(topicArn, user.getEmail());
+          PublishResult presult = sns.publish(prequest);
+        }
     }
     return jo.toString();
 
