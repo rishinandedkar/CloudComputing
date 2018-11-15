@@ -26,7 +26,8 @@
             "Path":"/",
             "Roles":[
                {
-                  "Ref":"EC2ToS3BucketRole"
+                  "Ref":"EC2ToS3BucketRole",
+                  "Ref":"CodeDeployEC2ServiceRole2"
                }
             ],
             "InstanceProfileName":"EC2ToS3BucketInstanceProfile"
@@ -42,13 +43,16 @@
                   {
                      "Effect":"Allow",
                      "Action":[
+                        "logs:Create*"
                         "logs:CreateLogGroup",
                         "logs:CreateLogStream",
                         "logs:PutLogEvents",
                         "logs:DescribeLogStreams"
+                        "s3:GetObject"
                      ],
                      "Resource":[
                         "arn:aws:logs:::*"
+                        "arn:aws:s3:::*"
                      ]
                   }
                ]
@@ -344,6 +348,40 @@
             "Path":"/"
          }
       },
+
+      "CodeDeployEC2ServiceRole2":{
+         "Type":"AWS::IAM::Role",
+         "Properties":{
+        "ManagedPolicyArns": [
+            "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
+            "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+            "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
+        ],
+            "AssumeRolePolicyDocument":{
+               "Version":"2012-10-17",
+               "Statement":[
+                  {
+                     "Effect":"Allow",
+                     "Principal":{
+                        "Service":[
+                           "ec2.amazonaws.com"
+                        ]
+                     },
+                     "Action":[
+                        "sts:AssumeRole"
+                     ]
+                  }
+               ]
+            },
+            "Path":"/"
+         }
+      },
+
+
+
+
+
+
       "CodeDeployServiceRole":{
          "Type":"AWS::IAM::Role",
          "Properties":{

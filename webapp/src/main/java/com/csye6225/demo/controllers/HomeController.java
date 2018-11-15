@@ -107,7 +107,8 @@ public class HomeController {
 
       if(userExists == null) {
 //        response.setStatus(HttpServletResponse.SC_OK);
-      } else {
+      } 
+      else {
 
     	  try {
         AmazonSNSClient awssns = new AmazonSNSClient(new InstanceProfileCredentialsProvider());
