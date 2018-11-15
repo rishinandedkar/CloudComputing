@@ -32,6 +32,14 @@
     "s3Domain" : {
     "Type" : "String"
     },
+    "domainname" : {
+    "Description" : "Domain Name",
+    "Type" : "String"
+  },
+  "lambdaArn" : {
+   "Description" : "Lamda Function ARN",
+   "Type" : "String"
+ },
     "iaminstance" : {
     "Description" : "Instance Profile Name for CodeDeploy to S3",
     "Type" : "String"
@@ -198,15 +206,78 @@
                                      ]
                   ]
                 },
+
+                {
+                                            "Fn::Join": [
+                                                "",
+                                                [
+                                                    "sudo echo TOPIC_ARN=",
+                                                    {"Ref": "MySNSTopic"},
+                                                    " >> /opt/tomcat/bin/setenv.sh \n"
+                                                ]
+                                            ]
+                                        },
+
+                       {
+                            "Fn::Join": [
+                                "",
+                                [
+                                    "sudo echo EMAIL_SOURCE=noreply@",
+                                    {"Ref" : "domainname"},
+                                    " >> /opt/tomcat/bin/setenv.sh \n"
+                                ]
+                            ]
+                        },
+                        {
+                            "Fn::Join": [
+                                "",
+                                [
+                                    "sudo echo DDB_TABLE=",
+                                    {"Ref" : "stackName"},
+                                    "-csye6225-dynamodb-table",
+                                    " >> /opt/tomcat/bin/setenv.sh \n"
+                                ]
+                            ]
+                        },
                 {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.profiles.active=s3developement\"'>> /opt/tomcat/bin/setenv.sh\n"]]},
                 {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=",{"Ref":"DBUsername"},"\"' >> /opt/tomcat/bin/setenv.sh\n"]]},
                 {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=",{"Ref":"DBPassword"},"\"' >> /opt/tomcat/bin/setenv.sh\n"]]},
-                  {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dbucket.name=",{"Ref":"s3Domain"},"\"' >> /opt/tomcat/bin/setenv.sh\n"]]},
+                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dbucket.name=",{"Ref":"s3Domain"},"\"' >> /opt/tomcat/bin/setenv.sh\n"]]},
 
-                  "chmod +x /opt/tomcat/bin/setenv.sh",
+
+                                        "sudo echo [general] > /var/awslogs.conf \n",
+                                        "sudo echo state_file = /var/awslogs/state/agent-state >> /var/awslogs.conf \n",
+                                        "sudo echo [/var/log/messages] >> /var/awslogs.conf \n",
+                                        "sudo echo file = /var/log/customlog.log >> /var/awslogs.conf \n",
+                                        "sudo echo log_group_name = /var/log/syslog >> /var/awslogs.conf \n",
+                                        "sudo echo log_stream_name = teststream >> /var/awslogs.conf \n",
+                                        "sudo echo datetime_format = %b %d %H:%M:%S >> /var/awslogs.conf \n",
+                                        "sudo wget https://s3.amazonaws.com/aws-cloudwatch/downloads/latest/awslogs-agent-setup.py \n",
+                                        "sudo python awslogs-agent-setup.py -n -r us-east-1 -c /var/awslogs.conf\n",
+                                        "sudo echo [Unit] > /var/awslogs.service \n",
+                                        "sudo echo Description=The CloudWatch Logs agent >> /var/awslogs.service \n",
+                                        "sudo echo After=rc-local.service >> /var/awslogs.service \n",
+                                        "sudo echo [Service] >> /var/awslogs.service \n",
+                                        "sudo echo Type=simple >> /var/awslogs.service \n",
+                                        "sudo echo Restart=always >> /var/awslogs.service \n",
+                                        "sudo echo KillMode=process >> /var/awslogs.service \n",
+                                        "sudo echo TimeoutSec=infinity >> /var/awslogs.service \n",
+                                        "sudo echo PIDFILE=/var/awslogs/state/awslogs.pid >> /var/awslogs.service \n",
+                                        "sudo echo ExecStart=/var/awslogs/bin/awslogs-agent-launcher.sh --start --background --pidfile '$PIDFILE' --user awslogs --chuid awslogs '&' >> /var/awslogs.service \n",
+                                        "sudo echo [Install] >> /var/awslogs.service \n",
+                                        "sudo echo WantedBy=multi-user.target >> /var/awslogs.service \n",
+                                        "sudo mv /var/awslogs.service /etc/systemd/system \n",
+                                        "sudo echo --Custom Log File-- > /var/log/customlog.log \n",
+                                        "sudo chmod 777 /var/log/customlog.log \n",
+                                        "sudo systemctl enable awslogs.service \n",
+                                        "sudo systemctl start awslogs.service \n",
+
+
+
+                                "chmod +x /opt/tomcat/bin/setenv.sh",
                                 "systemctl daemon-reload",
-                                "#systemctl start cloudwatch.service",
-                                "#systemctl enable cloudwatch.service",
+                                "systemctl start cloudwatch.service",
+                                "systemctl enable cloudwatch.service",
                                 "systemctl enable tomcat.service",
                                 "systemctl start tomcat.service"
 
@@ -219,7 +290,23 @@
         }
     ,
 
+    "MySNSTopic":{
+          "Type":"AWS::SNS::Topic",
+          "Properties":{
+            "TopicName":"password_reset"
+          }
+        },
 
+                  "LambdaInvokePermission":
+                  {
+                  "Type": "AWS::Lambda::Permission",
+                  "Properties": {
+                    "Action": "lambda:InvokeFunction",
+                    "Principal": "sns.amazonaws.com",
+                    "SourceArn": {"Ref": "MySNSTopic"},
+                    "FunctionName": {"Ref": "lambdaArn"}
+                  }
+                  },
   "S3" : {
      "Type" : "AWS::S3::Bucket",
      "Properties" : {
@@ -239,7 +326,10 @@
          "ReadCapacityUnits" : 5,
          "WriteCapacityUnits" : 5
        },
-
+       "TimeToLiveSpecification":{
+       "AttributeName" : "ttl",
+       "Enabled" : true
+       },
        "TableName": {"Fn::Join" : ["",[{"Ref" : "stackName"},"-csye6225-dynamodb-table"]] }
      }
    },
@@ -262,6 +352,7 @@
             "VPCSecurityGroups": [{"Ref": "dbSecurityGroup"}]
           }
       }
+
 
 
 

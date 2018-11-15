@@ -1,6 +1,8 @@
 package com.csye6225.demo.controllers;
 
 
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
+import com.amazonaws.services.sns.AmazonSNSClient;
 import com.csye6225.demo.model.User;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import com.csye6225.demo.service.UserService;
-
+import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.services.sns.model.PublishResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
@@ -71,7 +74,7 @@ public class HomeController {
 	    	jo.addProperty("message", "Account already exist !");
 	    } else {
 	      User createUser = new User();
-	      String regexEmail = "^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
+	      String regexEmail = "^[a-zA-Z0-9.!#$%&ï¿½*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
 	      String regexPassword = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[#$^+=!*()@%&]).{8,10}$";
 	      //The above regex has pattern for 1.two uppercase letters, 2. one special case letter,3.two digits,4. three lowercase letters,5.length 8
 	      if(user.getEmail().matches(regexEmail) && user.getPassword().matches(regexPassword)) {
@@ -92,6 +95,42 @@ public class HomeController {
     }
     return jo.toString();
   }
+  
+  @RequestMapping(value = "/resetPassword", method = RequestMethod.POST, produces = "application/json")
+  @ResponseBody
+  public String forgotPassword(@RequestBody User user) {
+    JsonObject jo = new JsonObject();
+    jo.addProperty("message","Email sent successfully");
+    if(user!=null){
+
+      User userExists = userService.findByEmail(user.getEmail());
+
+      if(userExists == null) {
+//        response.setStatus(HttpServletResponse.SC_OK);
+      } 
+      else {
+
+          AmazonSNSClient sns = new AmazonSNSClient(new InstanceProfileCredentialsProvider(true));
+          String topicArn = sns.createTopic("password_reset").getTopicArn();
+          PublishRequest prequest = new PublishRequest(topicArn, user.getEmail());
+          PublishResult presult = sns.publish(prequest);
+        }
+    }
+    return jo.toString();
+
+  }
+
+  @RequestMapping(value="/test", method= RequestMethod.GET, produces= "application/json")
+  @ResponseBody
+  public String test(HttpServletRequest request, HttpServletResponse response){
+    JsonObject jo = new JsonObject();
+    jo.addProperty("message","Email sent successfully");
+    response.setStatus(HttpServletResponse.SC_OK);
+
+    return jo.toString();
+
+  }
+
 
   public String[] decode(String header){
     assert header.substring(0, 6).equals("Basic");
