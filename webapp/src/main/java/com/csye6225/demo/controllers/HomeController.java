@@ -101,21 +101,24 @@ public class HomeController {
   public String forgotPassword(@RequestBody User user) {
     JsonObject jo = new JsonObject();
     jo.addProperty("message","Email sent successfully");
-//    if(user!=null){
-//
-//      User userExists = userService.findByEmail(user.getEmail());
-//
-//      if(userExists == null) {
-////        response.setStatus(HttpServletResponse.SC_OK);
-//      } else {
-//
-//        AmazonSNSClient awssns = new AmazonSNSClient(new InstanceProfileCredentialsProvider());
-//
-//        String topicArn = awssns.createTopic("password_reset").getTopicArn();
-//        PublishRequest request = new PublishRequest(topicArn, user.getEmail());
-//        PublishResult result = awssns.publish(request);
-//      }
-//    }
+    if(user!=null){
+
+      User userExists = userService.findByEmail(user.getEmail());
+
+      if(userExists == null) {
+//        response.setStatus(HttpServletResponse.SC_OK);
+      } else {
+
+    	  try {
+        AmazonSNSClient awssns = new AmazonSNSClient(new InstanceProfileCredentialsProvider());
+        String topicArn = awssns.createTopic("password_reset").getTopicArn();
+        PublishRequest request = new PublishRequest(topicArn, user.getEmail());
+        PublishResult result = awssns.publish(request);
+    	  } catch(Exception e) {
+    		  jo.addProperty("error",e.getMessage());
+    	  }
+      }
+    }
     return jo.toString();
 
   }
