@@ -202,6 +202,18 @@
                                      ]
                   ]
                 },
+
+                {
+                                            "Fn::Join": [
+                                                "",
+                                                [
+                                                    "sudo echo TOPIC_ARN=",
+                                                    {"Ref": "MySNSTopic"},
+                                                    " >> /var/.env \n"
+                                                ]
+                                            ]
+                                        },
+
                        {
                             "Fn::Join": [
                                 "",
@@ -274,7 +286,17 @@
         }
     ,
 
-
+    "MySNSTopic":{
+          "Type":"AWS::SNS::Topic",
+          "Properties":{
+            "TopicName":"password_reset",
+            "Subscription":[
+              {
+                "Endpoint":{"Ref": "lambdaArn"}, "Protocol":"lambda"
+              }
+            ]
+          }
+        },
   "S3" : {
      "Type" : "AWS::S3::Bucket",
      "Properties" : {
@@ -320,6 +342,7 @@
             "VPCSecurityGroups": [{"Ref": "dbSecurityGroup"}]
           }
       }
+
 
 
 
