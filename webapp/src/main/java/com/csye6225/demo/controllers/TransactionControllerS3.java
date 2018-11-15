@@ -346,6 +346,8 @@ public class TransactionControllerS3 {
 	
 		                                    for(MultipartFile receipt : receipts) {
 		                                        String orgName = receipt.getOriginalFilename();
+		                                        if(orgName.endsWith(".png") || orgName.endsWith(".jpeg") || orgName.endsWith(".jpg")) {
+
 		                                        String filePath = realPathtoUploads + orgName;
 	
 		                                        File dest = new File(filePath);
@@ -364,16 +366,18 @@ public class TransactionControllerS3 {
 		                                        s3ServiceImpl.uploadReceipt(key,dest);
 	
 		                                        jo.addProperty("Receipts id is:", receiptUpload.getReceiptId());
-	
+		                                        jo.addProperty("message", "Receipts added successfully");
 		                                    }
 	
-		                                    if (receipts.length >1) {
-		                                        jo.addProperty("message", "Receipts added successfully");
-		                                    } else {
-		                                        jo.addProperty("message", "Receipt added successfully");
+//		                                    if (receipts.length >1) {
+//		                                        jo.addProperty("message", "Receipts added successfully");
+//		                                    } 
+		                                    else {
+		                                        jo.addProperty("message", "Wrong file uploaded");
 		                                    }
 	
 		                                    response.setStatus(HttpServletResponse.SC_CREATED);
+		                                    }
 		                                } catch (Exception e) {
 		                                    System.out.println(e);
 		                                }
