@@ -36,6 +36,10 @@
     "Description" : "Domain Name",
     "Type" : "String"
   },
+  "lambdaArn" : {
+   "Description" : "Lamda Function ARN",
+   "Type" : "String"
+ },
     "iaminstance" : {
     "Description" : "Instance Profile Name for CodeDeploy to S3",
     "Type" : "String"
