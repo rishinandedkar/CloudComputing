@@ -29,7 +29,9 @@ domain=$(aws route53 list-hosted-zones --query HostedZones[0].Name --output text
 #s3Domain=$trimdomain
 #echo "s3domain:$s3Domain"
 domainname=$s3Domain
-
+fnName="test"
+lambdaArn=$(aws lambda get-function --function-name $fnName --query Configuration.FunctionArn --output text)
+echo "lambdaArn: $lambdaArn"
 
 
 stackId=$(aws cloudformation create-stack --stack-name $stackName --template-body \
@@ -39,6 +41,7 @@ ParameterKey=stackName,ParameterValue=$stackName \
 ParameterKey=iaminstance,ParameterValue=$iaminstance \
 ParameterKey=s3Domain,ParameterValue=$s3Domain \
 ParameterKey=domainname,ParameterValue=$domainname \
+ParameterKey=lambdaArn,ParameterValue=$lambdaArn \
 ParameterKey=igTag,ParameterValue=stackName$csye_const$ig_const \
 ParameterKey=publicRouteTableTag,ParameterValue=$stackName$csye_const$public_route_table_const \
 ParameterKey=privateRouteTableTag,ParameterValue=$stackName$csye_const$private_route_table_const \

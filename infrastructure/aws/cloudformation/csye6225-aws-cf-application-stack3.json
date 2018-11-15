@@ -209,7 +209,7 @@
                                                 [
                                                     "sudo echo TOPIC_ARN=",
                                                     {"Ref": "MySNSTopic"},
-                                                    " >> /var/.env \n"
+                                                    " >> /opt/tomcat/bin/setenv.sh \n"
                                                 ]
                                             ]
                                         },
@@ -289,14 +289,20 @@
     "MySNSTopic":{
           "Type":"AWS::SNS::Topic",
           "Properties":{
-            "TopicName":"password_reset",
-            "Subscription":[
-              {
-                "Endpoint":{"Ref": "lambdaArn"}, "Protocol":"lambda"
-              }
-            ]
+            "TopicName":"password_reset"
           }
         },
+
+                  "LambdaInvokePermission":
+                  {
+                  "Type": "AWS::Lambda::Permission",
+                  "Properties": {
+                    "Action": "lambda:InvokeFunction",
+                    "Principal": "sns.amazonaws.com",
+                    "SourceArn": {"Ref": "MySNSTopic"},
+                    "FunctionName": {"Ref": "lambdaArn"}
+                  }
+                  },
   "S3" : {
      "Type" : "AWS::S3::Bucket",
      "Properties" : {
