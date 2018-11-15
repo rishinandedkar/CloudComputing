@@ -3,7 +3,6 @@
 echo "CREATING STACK with EC2"
 stackName=$1
 s3Domain=$2
-echo "$s3Domain"
 csye_const=-csye6225-
 vpc_const=vpc
 ig_const=InternetGateway
@@ -24,16 +23,25 @@ depname="csye6225CodeDeployApplication-depgroup"
 cdeployRole=$(aws iam get-role --role-name CodeDeployServiceRole --query Role.Arn --output text)
 echo "CodeDeployServiceRole: $cdeployRole"
 
-
-
+domain=$(aws route53 list-hosted-zones --query HostedZones[0].Name --output text)
+#trimdomain=${domain::-1}
+#echo "trimdomainname:$trimdomain"
+#s3Domain=$trimdomain
+#echo "s3domain:$s3Domain"
+domainname=$s3Domain
+fnName="test"
+lambdaArn=$(aws lambda get-function --function-name $fnName --query Configuration.FunctionArn --output text)
+echo "lambdaArn: $lambdaArn"
 
 
 stackId=$(aws cloudformation create-stack --stack-name $stackName --template-body \
- file://csye6225-aws-cf-application-stack2.json --parameters \
+ file://csye6225-aws-cf-application-stack3.json --parameters \
 ParameterKey=vpcTag,ParameterValue=$vpcTag \
 ParameterKey=stackName,ParameterValue=$stackName \
 ParameterKey=iaminstance,ParameterValue=$iaminstance \
 ParameterKey=s3Domain,ParameterValue=$s3Domain \
+ParameterKey=domainname,ParameterValue=$domainname \
+ParameterKey=lambdaArn,ParameterValue=$lambdaArn \
 ParameterKey=igTag,ParameterValue=stackName$csye_const$ig_const \
 ParameterKey=publicRouteTableTag,ParameterValue=$stackName$csye_const$public_route_table_const \
 ParameterKey=privateRouteTableTag,ParameterValue=$stackName$csye_const$private_route_table_const \
