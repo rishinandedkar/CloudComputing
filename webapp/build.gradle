@@ -67,12 +67,12 @@ dependencies {
 	//compile group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.11.423'
 	//compile group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.218'
     
-	compile('com.amazonaws:aws-java-sdk-s3:1.11.205')
-	
-	compile group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.8.11'
+	compile('com.amazonaws:aws-java-sdk-s3:1.11.386')
+	compile group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.10.56'
 
     //compile('com.amazonaws:aws-java-sdk:1.11.221')
 
+	compile('com.timgroup:java-statsd-client:3.0.1')
 
     runtime('org.springframework.boot:spring-boot-devtools')
 	runtime('mysql:mysql-connector-java')
