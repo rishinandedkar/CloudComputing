@@ -119,10 +119,10 @@ public class HomeController {
     return jo.toString();
 
   }
-  
-  @RequestMapping(value = "/test", method = RequestMethod.POST, produces = "application/json")
+
+  @RequestMapping(value="/test", method= RequestMethod.GET, produces= "application/json")
   @ResponseBody
-  public String test(@RequestBody User user,HttpServletResponse response) {
+  public String test(HttpServletRequest request, HttpServletResponse response){
     JsonObject jo = new JsonObject();
     jo.addProperty("message","Email sent successfully");
     response.setStatus(HttpServletResponse.SC_OK);
