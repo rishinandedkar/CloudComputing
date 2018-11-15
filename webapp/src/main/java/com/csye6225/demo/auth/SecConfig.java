@@ -46,6 +46,7 @@ public class SecConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/resetPassword").permitAll()
             .antMatchers("/user/register").permitAll()
             .antMatchers("/time").permitAll()
+            .antMatchers("/test").permitAll()
             .antMatchers("/user/transaction").permitAll()
             .antMatchers("/user/transactions").permitAll()
             .antMatchers("/user/transaction/{id}").permitAll()

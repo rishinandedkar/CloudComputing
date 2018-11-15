@@ -119,6 +119,18 @@ public class HomeController {
     return jo.toString();
 
   }
+  
+  @RequestMapping(value = "/test", method = RequestMethod.POST, produces = "application/json")
+  @ResponseBody
+  public String test(@RequestBody User user,HttpServletResponse response) {
+    JsonObject jo = new JsonObject();
+    jo.addProperty("message","Email sent successfully");
+    response.setStatus(HttpServletResponse.SC_OK);
+
+    return jo.toString();
+
+  }
+
 
   public String[] decode(String header){
     assert header.substring(0, 6).equals("Basic");
