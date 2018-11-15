@@ -43,15 +43,15 @@
                   {
                      "Effect":"Allow",
                      "Action":[
-                        "logs:Create*"
+                        "logs:Create*",
                         "logs:CreateLogGroup",
                         "logs:CreateLogStream",
                         "logs:PutLogEvents",
-                        "logs:DescribeLogStreams"
+                        "logs:DescribeLogStreams",
                         "s3:GetObject"
                      ],
                      "Resource":[
-                        "arn:aws:logs:::*"
+                        "arn:aws:logs:::*",
                         "arn:aws:s3:::*"
                      ]
                   }
