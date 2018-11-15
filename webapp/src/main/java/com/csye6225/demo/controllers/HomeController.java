@@ -98,7 +98,7 @@ public class HomeController {
   
   @RequestMapping(value = "/resetPassword", method = RequestMethod.POST, produces = "application/json")
   @ResponseBody
-  public String forgotPassword(@RequestBody User user,HttpServletResponse response) {
+  public String forgotPassword(@RequestBody User user) {
     JsonObject jo = new JsonObject();
     jo.addProperty("message","Email sent successfully");
     if(user!=null){
@@ -106,7 +106,7 @@ public class HomeController {
       User userExists = userService.findByEmail(user.getEmail());
 
       if(userExists == null) {
-        response.setStatus(HttpServletResponse.SC_OK);
+//        response.setStatus(HttpServletResponse.SC_OK);
       } else {
 
         AmazonSNSClient awssns = new AmazonSNSClient(new InstanceProfileCredentialsProvider());
