@@ -14,5 +14,4 @@ csye6225-aws-cf-terminate-stack.sh
 -Now, run the application.sh script with user parameter as stack name and second input the Domain Name creted  using Name cheap account.
 -The script will ask for name of the EC2 instance.
 -Pass the name as you wish
-aws cloudformation describe-stacks
-
+aws cloudformation describe-stacks functionality
