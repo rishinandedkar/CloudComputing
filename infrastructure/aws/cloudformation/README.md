@@ -4,7 +4,7 @@ README
 
 ./csye6225-aws-cf-create-stack.sh
 
--VPCname -the 6 subnet cidr's -and 3 availabilty zones
+-VPCname -the 6 subnet cidr's -and 3 availabilty
 
 Make sure that the template file is in the same directory as the scripts
 -After the stack is created run the following script to terminate the vpc
