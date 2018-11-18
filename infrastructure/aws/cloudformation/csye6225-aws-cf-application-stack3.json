@@ -276,7 +276,7 @@
                                         "sudo echo --Custom Log File-- > /var/log/customlog.log \n",
                                         "sudo chmod 777 /var/log/customlog.log \n",
                                         "sudo systemctl enable awslogs.service \n",
-                                        "sudo systemctl start awslogs.service \n",
+                                        "sudo systemctl start awslogs.service \n"
 
 
 
