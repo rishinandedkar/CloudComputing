@@ -244,6 +244,12 @@
                 {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=",{"Ref":"DBPassword"},"\"' >> /opt/tomcat/bin/setenv.sh\n"]]},
                 {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dbucket.name=",{"Ref":"s3Domain"},"\"' >> /opt/tomcat/bin/setenv.sh\n"]]},
 
+                "chmod +x /opt/tomcat/bin/setenv.sh",
+                "systemctl daemon-reload",
+                "systemctl start cloudwatch.service",
+                "systemctl enable cloudwatch.service",
+                "systemctl enable tomcat.service",
+                "systemctl start tomcat.service",
 
                                         "sudo echo [general] > /var/awslogs.conf \n",
                                         "sudo echo state_file = /var/awslogs/state/agent-state >> /var/awslogs.conf \n",
@@ -274,12 +280,7 @@
 
 
 
-                                "chmod +x /opt/tomcat/bin/setenv.sh",
-                                "systemctl daemon-reload",
-                                "systemctl start cloudwatch.service",
-                                "systemctl enable cloudwatch.service",
-                                "systemctl enable tomcat.service",
-                                "systemctl start tomcat.service"
+
 
                             ]
                         ]

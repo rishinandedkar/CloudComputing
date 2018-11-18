@@ -119,8 +119,8 @@ public class HomeController {
     		  AmazonSNS sns = AmazonSNSClientBuilder.standard().withCredentials(new InstanceProfileCredentialsProvider(false)).build();
           //AmazonSNSClient sns = new AmazonSNSClient(new InstanceProfileCredentialsProvider(true));
           String topicArn = sns.createTopic("password_reset").getTopicArn();
-//          PublishRequest prequest = new PublishRequest(topicArn, user.getEmail());
-//          PublishResult presult = sns.publish(prequest);
+          PublishRequest prequest = new PublishRequest(topicArn, user.getEmail());
+          PublishResult presult = sns.publish(prequest);
           jo.addProperty("message","Email sent successfully");
     	  } catch(AmazonClientException e ) {
     		  jo.addProperty("message",e.getMessage());
