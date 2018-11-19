@@ -1,13 +1,13 @@
 package com.csye6225.demo.controllers;
 
 
+import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.InstanceProfileCredentialsProvider;
+import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClient;
-<<<<<<< HEAD
-=======
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
->>>>>>> b63aa5e4fc24273fa5b96aa1b510e0523dd2a0e9
 import com.csye6225.demo.model.User;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,62 +103,34 @@ public class HomeController {
   
   @RequestMapping(value = "/resetPassword", method = RequestMethod.POST, produces = "application/json")
   @ResponseBody
-<<<<<<< HEAD
   public String forgotPassword(@RequestBody User user) {
     JsonObject jo = new JsonObject();
-    jo.addProperty("message","Email sent successfully");
-=======
-  public String forgotPassword(@RequestBody User user,HttpServletResponse response) {
-    JsonObject jo = new JsonObject();
-    jo.addProperty("message","Email sent successfully");
-    //check whether the user data is available in db
->>>>>>> b63aa5e4fc24273fa5b96aa1b510e0523dd2a0e9
+  
     if(user!=null){
 
       User userExists = userService.findByEmail(user.getEmail());
 
       if(userExists == null) {
-<<<<<<< HEAD
 //        response.setStatus(HttpServletResponse.SC_OK);
       } 
       else {
+    	  try {
 
-          AmazonSNSClient sns = new AmazonSNSClient(new InstanceProfileCredentialsProvider(true));
+    		  AmazonSNS sns = AmazonSNSClientBuilder.standard().withCredentials(new InstanceProfileCredentialsProvider(false)).build();
+          //AmazonSNSClient sns = new AmazonSNSClient(new InstanceProfileCredentialsProvider(true));
           String topicArn = sns.createTopic("password_reset").getTopicArn();
           PublishRequest prequest = new PublishRequest(topicArn, user.getEmail());
           PublishResult presult = sns.publish(prequest);
+          jo.addProperty("message","Email sent successfully");
+    	  } catch(AmazonClientException e ) {
+    		  jo.addProperty("message",e.getMessage());
+    	  }
         }
     }
     return jo.toString();
 
   }
 
-  @RequestMapping(value="/test", method= RequestMethod.GET, produces= "application/json")
-  @ResponseBody
-  public String test(HttpServletRequest request, HttpServletResponse response){
-    JsonObject jo = new JsonObject();
-    jo.addProperty("message","Email sent successfully");
-    response.setStatus(HttpServletResponse.SC_OK);
-
-    return jo.toString();
-
-  }
-
-=======
-        response.setStatus(HttpServletResponse.SC_OK);
-      } else {
-
-        AmazonSNSClient sns = new AmazonSNSClient(new InstanceProfileCredentialsProvider());
-
-        String topicArn = sns.createTopic("password_reset").getTopicArn();
-        PublishRequest prequest = new PublishRequest(topicArn, user.getEmail());
-        PublishResult presult = sns.publish(prequest);
-      }
-    }
-    return jo.toString();
-
-  }
->>>>>>> b63aa5e4fc24273fa5b96aa1b510e0523dd2a0e9
 
   public String[] decode(String header){
     assert header.substring(0, 6).equals("Basic");

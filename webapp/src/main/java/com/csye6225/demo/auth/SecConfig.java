@@ -18,7 +18,7 @@ import org.springframework.session.web.http.HttpSessionStrategy;
 
 
 @Configuration
-//@EnableWebSecurity
+@EnableWebSecurity
 public class SecConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
