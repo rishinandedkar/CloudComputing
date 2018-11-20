@@ -256,9 +256,9 @@
                                              "systemctl enable tomcat.service",
                                              "systemctl start tomcat.service",
 
+                                             "cd /opt/",
                                              "wget https://s3.amazonaws.com/amazoncloudwatch-agent/centos/amd64/latest/amazon-cloudwatch-agent.rpm",
 		                                         "sudo rpm -U ./amazon-cloudwatch-agent.rpm",
-                                             "cd /opt/",
                                              "touch cloudwatch-config.json",
                                              "chmod 755 cloudwatch-config.json",
 		          "echo '{\"agent\":{' >> cloudwatch-config.json",
