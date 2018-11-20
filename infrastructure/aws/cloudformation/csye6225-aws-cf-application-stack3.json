@@ -270,7 +270,7 @@
 		          "echo '\"metrics_collected\":{' >> cloudwatch-config.json",
 		          "echo '\"statsd\":{' >> cloudwatch-config.json",
 		          "echo '\"service_address\":\":8125\", \"metrics_collection_interval\":10, \"metrics_aggregation_interval\":0 }}}}' >> cloudwatch-config.json",
-		          "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/cloudwatch-config.json -s"
+		          "sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/cloudwatch-config.json -s",
 
               "sudo systemctl start cloudwatch.service",
               "sudo systemctl enable cloudwatch.service"
