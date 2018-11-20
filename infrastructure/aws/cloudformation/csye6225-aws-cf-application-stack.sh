@@ -29,9 +29,9 @@ domain=$(aws route53 list-hosted-zones --query HostedZones[0].Name --output text
 #s3Domain=$trimdomain
 #echo "s3domain:$s3Domain"
 domainname=$s3Domain
-fnName="test"
-lambdaArn=$(aws lambda get-function --function-name $fnName --query Configuration.FunctionArn --output text)
-echo "lambdaArn: $lambdaArn"
+#fnName="test"
+#lambdaArn=$(aws lambda get-function --function-name $fnName --query Configuration.FunctionArn --output text)
+#echo "lambdaArn: $lambdaArn"
 
 
 stackId=$(aws cloudformation create-stack --stack-name $stackName --template-body \

@@ -33,6 +33,30 @@
             "InstanceProfileName":"EC2ToS3BucketInstanceProfile"
          }
       },
+
+      "EC2ToSNSPolicy" :{
+      "Type" : "AWS::IAM::ManagedPolicy",
+      "Properties" : {
+        "ManagedPolicyName" : "EC2ToSNSPolicy",
+        "PolicyDocument" : {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "SNS:Publish"
+              ],
+              "Resource": "*"
+            }
+          ]
+        },
+        "Roles" : [
+          {
+            "Ref" : "EC2ToS3BucketRole"
+          }
+        ]
+      }
+    },
       "EC2ToCloudWatchPolicy":{
          "Type":"AWS::IAM::ManagedPolicy",
          "Properties":{
@@ -64,72 +88,13 @@
             ]
          }
       },
-<<<<<<< HEAD
-=======
 
-      "EC2ToSNSPolicy" :{
-      "Type" : "AWS::IAM::ManagedPolicy",
-      "Properties" : {
-        "ManagedPolicyName" : "EC2ToSNSPolicy",
-        "PolicyDocument" : {
-          "Version": "2012-10-17",
-          "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "SNS:Publish"
-            ],
-            "Resource": "*"
-        }
-    ]
-        },
-        "Roles" : [
-          {
-            "Ref" : "EC2ToS3BucketRole"
-          }
-        ]
-      }
-      },
-
-
->>>>>>> master
-      "LambdaRole":{
-         "Type":"AWS::IAM::Role",
-         "Properties":{
-            "RoleName":"LambdaExecutionRole",
-            "AssumeRolePolicyDocument":{
-               "Version":"2012-10-17",
-               "Statement":[
-                  {
-                     "Effect":"Allow",
-                     "Principal":{
-                        "Service":[
-                           "lambda.amazonaws.com"
-                        ]
-                     },
-                     "Action":[
-                        "sts:AssumeRole"
-                     ]
-                  }
-               ]
-            },
-            "ManagedPolicyArns":[
-               "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
-               "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess",
-               "arn:aws:iam::aws:policy/AmazonSESFullAccess"
-            ]
-         }
-      },
       "EC2ToS3BucketPolicy":{
-<<<<<<< HEAD
-         "Type":"AWS::IAM::Policy",
-         "Properties":{
-            "PolicyName":"EC2ToS3BucketPolicy",
-=======
+
          "Type":"AWS::IAM::ManagedPolicy",
          "Properties":{
             "ManagedPolicyName":"EC2ToS3BucketPolicy",
->>>>>>> master
+
             "PolicyDocument":{
                "Version":"2012-10-17",
                "Statement":[
@@ -154,11 +119,9 @@
       },
       "EC2ToS3BucketRole":{
          "Type":"AWS::IAM::Role",
+         "Description":"EC2ToS3BucketRole",
          "Properties":{
-<<<<<<< HEAD
-=======
            "ManagedPolicyArns" : ["arn:aws:iam::aws:policy/CloudWatchAgentAdminPolicy"],
->>>>>>> master
             "AssumeRolePolicyDocument":{
                "Version":"2012-10-17",
                "Statement":[
@@ -204,24 +167,15 @@
                      ]
                   }
                }
-            ]
+            ],
+            "RoleName":"EC2ToS3BucketRole"
          }
       },
       "TravisToS3BucketPolicy":{
-<<<<<<< HEAD
-         "Type":"AWS::IAM::Policy",
-=======
          "Type":"AWS::IAM::ManagedPolicy",
->>>>>>> master
          "Properties":{
-            "Users":[
-               "travis"
-            ],
-<<<<<<< HEAD
-            "PolicyName":"TravisToS3BucketPolicy",
-=======
+            "Users":["travis"],
             "ManagedPolicyName":"TravisToS3BucketPolicy",
->>>>>>> master
             "PolicyDocument":{
                "Version":"2012-10-17",
                "Statement":[
@@ -248,17 +202,13 @@
                      ]
                   }
                ]
-<<<<<<< HEAD
-            }
-=======
-            },
+             },
             "Roles" : [
           {
             "Ref" : "TravisToS3BucketRole"
           }
         ]
->>>>>>> master
-         }
+        }
       },
       "TravisToS3BucketRole":{
          "Type":"AWS::IAM::Role",
@@ -282,9 +232,6 @@
             "Path":"/"
          }
       },
-<<<<<<< HEAD
-=======
-
       "TravisToS3BucketInstanceProfile" : {
       "Type" : "AWS::IAM::InstanceProfile",
       "Properties" : {
@@ -296,33 +243,23 @@
         ]
       }
     },
->>>>>>> master
       "TravisToCodeDeployInstanceProfile":{
          "Type":"AWS::IAM::InstanceProfile",
          "Properties":{
-            "Path":"/",
-            "Roles":[
-               {
-                  "Ref":"TravisToCodeDeployRole"
-               }
-            ]
-         }
-      },
+           "Path":"/",
+
+            "Roles":[{"Ref":"TravisToCodeDeployRole"}]
+                }
+         },
       "TravisToCodeDeployPolicy":{
-<<<<<<< HEAD
-         "Type":"AWS::IAM::Policy",
-=======
          "Type":"AWS::IAM::ManagedPolicy",
->>>>>>> master
-         "Properties":{
+          "Properties":{
             "Users":[
                "travis"
             ],
-<<<<<<< HEAD
-            "PolicyName":"TravisToCodeDeployPolicy",
-=======
+
             "ManagedPolicyName":"TravisToCodeDeployPolicy",
->>>>>>> master
+
             "PolicyDocument":{
                "Version":"2012-10-17",
                "Statement":[
@@ -539,4 +476,4 @@
          }
       }
    }
-}
+ }
