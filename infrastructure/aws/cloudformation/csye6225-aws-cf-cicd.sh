@@ -6,7 +6,7 @@ appname=$2
 depname=$3
 domain=$(aws route53 list-hosted-zones --query HostedZones[0].Name --output text)
 trimdomain=${domain::-1}
-s3domain="code-deploy.$trimdomain"
+s3domain="code-d.$trimdomain"
 echo "S3 Domain: $s3domain"
 accid=$(aws sts get-caller-identity --output text --query 'Account')
 echo "AccountId: $accid"

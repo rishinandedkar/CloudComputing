@@ -167,8 +167,7 @@
                      ]
                   }
                }
-            ],
-            "RoleName":"EC2ToS3BucketRole"
+            ]
          }
       },
       "TravisToS3BucketPolicy":{
