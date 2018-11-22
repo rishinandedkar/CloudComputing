@@ -121,7 +121,7 @@
          "Type":"AWS::IAM::Role",
          "Description":"EC2ToS3BucketRole",
          "Properties":{
-           "ManagedPolicyArns" : ["arn:aws:iam::aws:policy/CloudWatchAgentAdminPolicy"],
+           "ManagedPolicyArns" : ["arn:aws:iam::aws:policy/CloudWatchAgentAdminPolicy","arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"],
             "AssumeRolePolicyDocument":{
                "Version":"2012-10-17",
                "Statement":[
