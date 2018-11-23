@@ -1,6 +1,6 @@
 {
    "AWSTemplateFormatVersion":"2010-09-09",
-   "Description":"IAM Policy and roles for EC2,CodeDeploy and TravisCI : CD-CI Stack",
+   "Description":"CI-CD Stack",
    "Parameters":{
       "s3domain":{
          "Description":"S3 Bucket Name",
@@ -26,8 +26,7 @@
             "Path":"/",
             "Roles":[
                {
-                  "Ref":"EC2ToS3BucketRole",
-                  "Ref":"CodeDeployEC2ServiceRole2"
+                  "Ref":"EC2ToS3BucketRole"
                }
             ],
             "InstanceProfileName":"EC2ToS3BucketInstanceProfile"
@@ -68,7 +67,7 @@
                      "Effect":"Allow",
                      "Action":[
                         "logs:*",
-                        "cloudwatch:*",
+                        "cloudwatch:*"
                      ],
                      "Resource":[
                         "*"
@@ -116,7 +115,12 @@
          "Type":"AWS::IAM::Role",
          "Description":"EC2ToS3BucketRole",
          "Properties":{
-           "ManagedPolicyArns" : ["arn:aws:iam::aws:policy/CloudWatchAgentAdminPolicy","arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"],
+           "ManagedPolicyArns" : [
+           "arn:aws:iam::aws:policy/CloudWatchAgentAdminPolicy",
+           "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
+           "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
+           "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+           "arn:aws:iam::aws:policy/AmazonSNSFullAccess"],
             "AssumeRolePolicyDocument":{
                "Version":"2012-10-17",
                "Statement":[
@@ -358,40 +362,6 @@
             "Path":"/"
          }
       },
-
-      "CodeDeployEC2ServiceRole2":{
-         "Type":"AWS::IAM::Role",
-         "Properties":{
-        "ManagedPolicyArns": [
-            "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
-            "arn:aws:iam::aws:policy/AmazonS3FullAccess",
-            "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
-        ],
-            "AssumeRolePolicyDocument":{
-               "Version":"2012-10-17",
-               "Statement":[
-                  {
-                     "Effect":"Allow",
-                     "Principal":{
-                        "Service":[
-                           "ec2.amazonaws.com"
-                        ]
-                     },
-                     "Action":[
-                        "sts:AssumeRole"
-                     ]
-                  }
-               ]
-            },
-            "Path":"/"
-         }
-      },
-
-
-
-
-
-
       "CodeDeployServiceRole":{
          "Type":"AWS::IAM::Role",
          "Properties":{

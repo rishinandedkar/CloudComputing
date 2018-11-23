@@ -21,7 +21,6 @@ keyName="csye6225"
 appname="APPLICATION_NAME"
 depname="depgroup"
 codedeployRole=$(aws iam get-role --role-name CodeDeployServiceRole --query Role.Arn --output text)
-echo "CodeDeployServiceRole: $cdeployRole"
 
 domain=$(aws route53 list-hosted-zones --query HostedZones[0].Name --output text)
 #trimdomain=${domain::-1}
