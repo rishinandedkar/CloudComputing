@@ -50,19 +50,7 @@
      "Type" : "String",
      "Default":"passwword_reset"
    },
-   "appname" : {
-     "Description" : "Application Name",
-     "Type" : "String"
 
-   },
-   "depname" : {
-     "Description" : "Deployment Group Name",
-     "Type" : "String"
-   },
-   "codedeployRole":{
-     "Description" : "Code Deploy Service Role",
-     "Type" : "String"
-   },
   "DBUsername" : {
              "Default" : "csye6225master",
              "Description" : "The database admin account username",
@@ -78,6 +66,23 @@
   },
   "Resources" :
   {
+    "WebServerGroup" : {
+      "Type" : "AWS::AutoScaling::AutoScalingGroup",
+      "Properties" : {
+        "VPCZoneIdentifier" : [{"Ref": "ec2Subnet"}],
+        "LaunchConfigurationName" : { "Ref" : "asg_launch_config" },
+        "MinSize" : "3",
+        "MaxSize" : "10",
+        "DesiredCapacity":"3",
+        "Cooldown":"60",
+        "Tags" : [ {
+         "Key" : "Name",
+         "Value" : "MyEC2Instance",
+         "PropagateAtLaunch" : "true"
+         } ],
+        "TargetGroupARNs" : [ { "Ref" : "ALBTargetGroup" } ]
+      }
+    },
 
      "webServerSecurityGroup": {
        "Type": "AWS::EC2::SecurityGroup",
@@ -141,18 +146,15 @@
 
 },
 
-"EC2Instance": {
-            "Type": "AWS::EC2::Instance",
+"asg_launch_config": {
+             "Type" : "AWS::AutoScaling::LaunchConfiguration",
             "Properties": {
+                "AssociatePublicIpAddress":true,
                 "ImageId": "ami-9887c6e7",
                 "InstanceType": "t2.micro",
-                "DisableApiTermination": "False",
-                "SecurityGroupIds": [{"Ref" : "webServerSecurityGroup"}],
+                "SecurityGroups" : [{"Ref" : "ec2SecurityGroup"}],
                 "KeyName": "KeyName",
-                "SubnetId" : {"Fn::ImportValue" : "csye6225-cloud-Networking-web-subnet1"},
-                "Tenancy": "default",
                 "IamInstanceProfile": {"Ref":"iaminstance"},
-                "Tags": [{"Key" : "Name", "Value" : "MyEC2Instance"}],
                 "BlockDeviceMappings": [
                  {
                    "DeviceName" : "/dev/sda1",
@@ -305,6 +307,119 @@
         }
     ,
 
+    "WebServerScaleUpPolicy" : {
+         "Type" : "AWS::AutoScaling::ScalingPolicy",
+         "Properties" : {
+           "AdjustmentType" : "ChangeInCapacity",
+           "AutoScalingGroupName" : { "Ref" : "WebServerGroup" },
+           "Cooldown" : "60",
+           "ScalingAdjustment" : "1"
+         }
+       },
+       "WebServerScaleDownPolicy" : {
+         "Type" : "AWS::AutoScaling::ScalingPolicy",
+         "Properties" : {
+           "AdjustmentType" : "ChangeInCapacity",
+           "AutoScalingGroupName" : { "Ref" : "WebServerGroup" },
+           "Cooldown" : "60",
+           "ScalingAdjustment" : "-1"
+         }
+       },
+       "CPUAlarmHigh": {
+            "Type": "AWS::CloudWatch::Alarm",
+            "Properties": {
+               "AlarmDescription": "Scale-up if CPU > 90% for 10 minutes",
+               "MetricName": "CPUUtilization",
+               "Namespace": "AWS/EC2",
+               "Statistic": "Average",
+               "Period": "300",
+               "EvaluationPeriods": "2",
+               "Threshold": "90",
+               "AlarmActions": [ { "Ref": "WebServerScaleUpPolicy" } ],
+               "Dimensions": [
+                 {
+                   "Name": "AutoScalingGroupName",
+                   "Value": { "Ref": "WebServerGroup" }
+                 }
+               ],
+               "ComparisonOperator": "GreaterThanThreshold"
+             }
+           },
+           "CPUAlarmLow": {
+            "Type": "AWS::CloudWatch::Alarm",
+            "Properties": {
+               "AlarmDescription": "Scale-down if CPU < 70% for 10 minutes",
+               "MetricName": "CPUUtilization",
+               "Namespace": "AWS/EC2",
+               "Statistic": "Average",
+               "Period": "300",
+               "EvaluationPeriods": "2",
+               "Threshold": "70",
+               "AlarmActions": [ { "Ref": "WebServerScaleDownPolicy" } ],
+               "Dimensions": [
+                 {
+                   "Name": "AutoScalingGroupName",
+                   "Value": { "Ref": "WebServerGroup" }
+                 }
+               ],
+               "ComparisonOperator": "LessThanThreshold"
+             }
+           },
+
+
+        "ApplicationLoadBalancer" : {
+        "Type" : "AWS::ElasticLoadBalancingV2::LoadBalancer",
+        "Properties" : {
+          "Name":"ApplicationLoadBalancer",
+          "Subnets" : [{"Ref": "ec2Subnet"},{"Ref": "ec2Subnet2"}],
+          "SecurityGroups": [{"Ref": "sglb"}]
+        }
+      },
+
+      "ALBListener" : {
+        "Type" : "AWS::ElasticLoadBalancingV2::Listener",
+        "Properties" : {
+          "DefaultActions" : [{
+            "Type" : "forward",
+            "TargetGroupArn" : { "Ref" : "ALBTargetGroup" }
+          }],
+          "LoadBalancerArn" : { "Ref" : "ApplicationLoadBalancer" },
+          "Port" : "80",
+          "Protocol" : "HTTP"
+        }
+      },
+
+      "ALBListener" : {
+       "Type" : "AWS::ElasticLoadBalancingV2::Listener",
+       "Properties" : {
+         "DefaultActions" : [{
+           "Type" : "forward",
+           "TargetGroupArn" : { "Ref" : "ALBTargetGroup" }
+         }],
+         "Certificates" : [{"CertificateArn":{"Ref" : "SSLArn"}}],
+         "LoadBalancerArn" : { "Ref" : "ApplicationLoadBalancer" },
+         "Port" : "443",
+         "Protocol" : "HTTPS"
+       }
+     },
+
+     "ALBTargetGroup" : {
+    "Type" : "AWS::ElasticLoadBalancingV2::TargetGroup",
+    "Properties" : {
+      "Name" : "ALBTargetGroup",
+      "HealthCheckIntervalSeconds" : 30,
+      "HealthCheckTimeoutSeconds" : 5,
+      "HealthyThresholdCount" : 3,
+      "Port" : 3000,
+      "Protocol" : "HTTP",
+      "UnhealthyThresholdCount" : 5,
+      "TargetGroupAttributes" : [
+          {"Key" : "stickiness.enabled","Value" : "true"}
+      ],
+      "VpcId" : {"Ref" : "VpcId"}
+    }
+  },
+
   "S3" : {
      "Type" : "AWS::S3::Bucket",
      "Properties" : {
@@ -349,31 +464,61 @@
             "PubliclyAccessible" : "false",
             "VPCSecurityGroups": [{"Ref": "dbSecurityGroup"}]
           }
-      },
-
-
-      "CodeDeployApplication": {
-         "Type": "AWS::CodeDeploy::Application",
-         "Properties": {
-           "ApplicationName" : {"Ref" : "appname"}
-         }
-       },
-
-       "CodeDeployDeploymentGroup": {
-        "Type": "AWS::CodeDeploy::DeploymentGroup",
-        "Properties": {
-          "ApplicationName" : {"Ref" : "appname"},
-          "Ec2TagFilters" : [{
-            "Key" : "Name",
-            "Value" : "MyEC2Instance",
-            "Type" : "KEY_AND_VALUE"
-          }],
-          "ServiceRoleArn" : {"Ref" : "codedeployRole"},
-          "DeploymentGroupName" : {"Ref" : "depname"}
-        }
-       }
-
+      }
   },
+
+  "CodeDeployApplication": {
+     "Type": "AWS::CodeDeploy::Application",
+     "Properties": {
+       "ApplicationName" : {"Ref" : "appname"}
+     }
+   },
+
+
+
+   "CodeDeployDeploymentGroup":{
+      "Type":"AWS::CodeDeploy::DeploymentGroup",
+      "Properties":{
+         "ApplicationName":{
+            "Ref":"appname"
+         },
+         "AutoScalingGroups" : [ {"Ref" : "WebServerGroup" } ],
+         "Ec2TagFilters":[
+            {
+               "Key":"Name",
+               "Value":"MyEC2Instance",
+               "Type":"KEY_AND_VALUE"
+            }
+         ],
+         "LoadBalancerInfo": {
+          "ElbInfoList": [{
+            "Name": {"Fn::GetAtt": ["ApplicationLoadBalancer", "LoadBalancerName"]}
+          }]
+        },
+         "ServiceRoleArn":{
+            "Fn::GetAtt":[
+               "CodeDeployServiceRole",
+               "Arn"
+            ]
+         },
+         "DeploymentGroupName":{
+            "Ref":"depname"
+         }
+      }
+   },
+  "MyRecordSet": {
+      "Type": "AWS::Route53::RecordSet",
+      "Properties": {
+        "HostedZoneName" : {"Fn::Join" : ["",[{"Ref" : "domainname"},"."]] },
+        "Name": {"Fn::Join" : ["",["www.",{"Ref" : "domainname"},"."]] },
+        "Type": "A",
+        "AliasTarget": {
+            "HostedZoneId" : {"Fn::GetAtt": ["ApplicationLoadBalancer", "CanonicalHostedZoneID"]},
+            "DNSName": {"Fn::GetAtt": ["ApplicationLoadBalancer", "DNSName"]},
+            "EvaluateTargetHealth": "false"
+        }
+      }
+    },
 
   "Outputs": {
 
@@ -409,6 +554,13 @@
                     "PublicIp"
                 ]
             }
-        }
+        },
+        "URL" : {
+        "Description" : "The URL of the website",
+        "Value" :  { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [
+        "ApplicationLoadBalancer", "DNSName" ]}]]}
+    }
+  }
+
   }
 }

@@ -18,9 +18,9 @@ vpcTag=$stackName$csye_const$vpc_const
 echo $vpcTag
 iaminstance="EC2ToS3BucketInstanceProfile"
 keyName="csye6225"
-appname="csye6225CodeDeployApplication"
-depname="csye6225CodeDeployApplication-depgroup"
-cdeployRole=$(aws iam get-role --role-name CodeDeployServiceRole --query Role.Arn --output text)
+appname="APPLICATION_NAME"
+depname="depgroup"
+codedeployRole=$(aws iam get-role --role-name CodeDeployServiceRole --query Role.Arn --output text)
 echo "CodeDeployServiceRole: $cdeployRole"
 
 domain=$(aws route53 list-hosted-zones --query HostedZones[0].Name --output text)
@@ -38,6 +38,9 @@ stackId=$(aws cloudformation create-stack --stack-name $stackName --template-bod
  file://csye6225-aws-cf-application-stack3.json --parameters \
 ParameterKey=vpcTag,ParameterValue=$vpcTag \
 ParameterKey=stackName,ParameterValue=$stackName \
+ParameterKey=appname,ParameterValue=$appname \
+ParameterKey=depname,ParameterValue=$depname \
+ParameterKey=codedeployRole,ParameterValue=$codedeployRole \
 ParameterKey=iaminstance,ParameterValue=$iaminstance \
 ParameterKey=s3Domain,ParameterValue=$s3Domain \
 ParameterKey=domainname,ParameterValue=$domainname \

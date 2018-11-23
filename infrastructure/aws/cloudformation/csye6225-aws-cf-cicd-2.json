@@ -67,16 +67,11 @@
                   {
                      "Effect":"Allow",
                      "Action":[
-                        "logs:Create*",
-                        "logs:CreateLogGroup",
-                        "logs:CreateLogStream",
-                        "logs:PutLogEvents",
-                        "logs:DescribeLogStreams",
-                        "s3:GetObject"
+                        "logs:*",
+                        "cloudwatch:*",
                      ],
                      "Resource":[
-                        "arn:aws:logs:::*",
-                        "arn:aws:s3:::*"
+                        "*"
                      ]
                   }
                ]
@@ -430,39 +425,8 @@
                "Ref":"s3domain"
             }
          }
-      },
-      "CodeDeployApplication":{
-         "Type":"AWS::CodeDeploy::Application",
-         "Properties":{
-            "ApplicationName":{
-               "Ref":"appname"
-            }
-         }
-      },
-      "CodeDeployDeploymentGroup":{
-         "Type":"AWS::CodeDeploy::DeploymentGroup",
-         "Properties":{
-            "ApplicationName":{
-               "Ref":"appname"
-            },
-            "Ec2TagFilters":[
-               {
-                  "Key":"Name",
-                  "Value":"MyEC2Instance",
-                  "Type":"KEY_AND_VALUE"
-               }
-            ],
-            "ServiceRoleArn":{
-               "Fn::GetAtt":[
-                  "CodeDeployServiceRole",
-                  "Arn"
-               ]
-            },
-            "DeploymentGroupName":{
-               "Ref":"depname"
-            }
-         }
       }
+
    },
    "Outputs":{
       "CodeDeployServiceRoleArn":{
