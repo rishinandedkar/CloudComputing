@@ -2,8 +2,6 @@
 #Variables
 
 stackname=$1
-appname=$2
-depname=$3
 domain=$(aws route53 list-hosted-zones --query HostedZones[0].Name --output text)
 trimdomain=${domain::-1}
 s3domain="code-d.$trimdomain"
@@ -13,7 +11,7 @@ echo "AccountId: $accid"
 
 
 
-createOutput=$(aws cloudformation create-stack --stack-name $stackname --capabilities CAPABILITY_NAMED_IAM --template-body file://csye6225-aws-cf-cicd-2.json --parameters ParameterKey=s3domain,ParameterValue=$s3domain ParameterKey=accid,ParameterValue=$accid ParameterKey=depname,ParameterValue=$depname ParameterKey=appname,ParameterValue=$appname)
+createOutput=$(aws cloudformation create-stack --stack-name $stackname --capabilities CAPABILITY_NAMED_IAM --template-body file://csye6225-aws-cf-cicd-2.json --parameters ParameterKey=s3domain,ParameterValue=$s3domain ParameterKey=accid,ParameterValue=$accid)
 
 
 if [ $? -eq 0 ]; then

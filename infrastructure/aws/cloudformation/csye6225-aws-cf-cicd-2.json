@@ -6,14 +6,6 @@
          "Description":"S3 Bucket Name",
          "Type":"String"
       },
-      "appname":{
-         "Description":"Application Name",
-         "Type":"String"
-      },
-      "depname":{
-         "Description":"Deployment Group Name",
-         "Type":"String"
-      },
       "accid":{
          "Description":"Account Id",
          "Type":"String"
