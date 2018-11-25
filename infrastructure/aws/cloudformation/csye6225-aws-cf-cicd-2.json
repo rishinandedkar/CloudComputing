@@ -1,17 +1,9 @@
 {
    "AWSTemplateFormatVersion":"2010-09-09",
-   "Description":"IAM Policy and roles for EC2,CodeDeploy and TravisCI : CD-CI Stack",
+   "Description":"CI-CD Stack",
    "Parameters":{
       "s3domain":{
          "Description":"S3 Bucket Name",
-         "Type":"String"
-      },
-      "appname":{
-         "Description":"Application Name",
-         "Type":"String"
-      },
-      "depname":{
-         "Description":"Deployment Group Name",
          "Type":"String"
       },
       "accid":{
@@ -26,13 +18,36 @@
             "Path":"/",
             "Roles":[
                {
-                  "Ref":"EC2ToS3BucketRole",
-                  "Ref":"CodeDeployEC2ServiceRole2"
+                  "Ref":"EC2ToS3BucketRole"
                }
             ],
             "InstanceProfileName":"EC2ToS3BucketInstanceProfile"
          }
       },
+
+      "EC2ToSNSPolicy" :{
+      "Type" : "AWS::IAM::ManagedPolicy",
+      "Properties" : {
+        "ManagedPolicyName" : "EC2ToSNSPolicy",
+        "PolicyDocument" : {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "SNS:Publish"
+              ],
+              "Resource": "*"
+            }
+          ]
+        },
+        "Roles" : [
+          {
+            "Ref" : "EC2ToS3BucketRole"
+          }
+        ]
+      }
+    },
       "EC2ToCloudWatchPolicy":{
          "Type":"AWS::IAM::ManagedPolicy",
          "Properties":{
@@ -43,16 +58,11 @@
                   {
                      "Effect":"Allow",
                      "Action":[
-                        "logs:Create*",
-                        "logs:CreateLogGroup",
-                        "logs:CreateLogStream",
-                        "logs:PutLogEvents",
-                        "logs:DescribeLogStreams",
-                        "s3:GetObject"
+                        "logs:*",
+                        "cloudwatch:*"
                      ],
                      "Resource":[
-                        "arn:aws:logs:::*",
-                        "arn:aws:s3:::*"
+                        "*"
                      ]
                   }
                ]
@@ -65,6 +75,7 @@
          }
       },
 
+<<<<<<< HEAD
       "EC2ToSNSPolicy" :{
       "Type" : "AWS::IAM::ManagedPolicy",
       "Properties" : {
@@ -120,6 +131,14 @@
          "Type":"AWS::IAM::ManagedPolicy",
          "Properties":{
             "ManagedPolicyName":"EC2ToS3BucketPolicy",
+=======
+      "EC2ToS3BucketPolicy":{
+
+         "Type":"AWS::IAM::ManagedPolicy",
+         "Properties":{
+            "ManagedPolicyName":"EC2ToS3BucketPolicy",
+
+>>>>>>> 43326347b3bcdd00b7bc9c19dd3aeb7311344095
             "PolicyDocument":{
                "Version":"2012-10-17",
                "Statement":[
@@ -144,8 +163,18 @@
       },
       "EC2ToS3BucketRole":{
          "Type":"AWS::IAM::Role",
+         "Description":"EC2ToS3BucketRole",
          "Properties":{
+<<<<<<< HEAD
            "ManagedPolicyArns" : ["arn:aws:iam::aws:policy/CloudWatchAgentAdminPolicy"],
+=======
+           "ManagedPolicyArns" : [
+           "arn:aws:iam::aws:policy/CloudWatchAgentAdminPolicy",
+           "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
+           "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
+           "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+           "arn:aws:iam::aws:policy/AmazonSNSFullAccess"],
+>>>>>>> 43326347b3bcdd00b7bc9c19dd3aeb7311344095
             "AssumeRolePolicyDocument":{
                "Version":"2012-10-17",
                "Statement":[
@@ -197,9 +226,13 @@
       "TravisToS3BucketPolicy":{
          "Type":"AWS::IAM::ManagedPolicy",
          "Properties":{
+<<<<<<< HEAD
             "Users":[
                "travis"
             ],
+=======
+            "Users":["travis"],
+>>>>>>> 43326347b3bcdd00b7bc9c19dd3aeb7311344095
             "ManagedPolicyName":"TravisToS3BucketPolicy",
             "PolicyDocument":{
                "Version":"2012-10-17",
@@ -227,13 +260,21 @@
                      ]
                   }
                ]
+<<<<<<< HEAD
             },
+=======
+             },
+>>>>>>> 43326347b3bcdd00b7bc9c19dd3aeb7311344095
             "Roles" : [
           {
             "Ref" : "TravisToS3BucketRole"
           }
         ]
+<<<<<<< HEAD
          }
+=======
+        }
+>>>>>>> 43326347b3bcdd00b7bc9c19dd3aeb7311344095
       },
       "TravisToS3BucketRole":{
          "Type":"AWS::IAM::Role",
@@ -257,7 +298,10 @@
             "Path":"/"
          }
       },
+<<<<<<< HEAD
 
+=======
+>>>>>>> 43326347b3bcdd00b7bc9c19dd3aeb7311344095
       "TravisToS3BucketInstanceProfile" : {
       "Type" : "AWS::IAM::InstanceProfile",
       "Properties" : {
@@ -272,21 +316,28 @@
       "TravisToCodeDeployInstanceProfile":{
          "Type":"AWS::IAM::InstanceProfile",
          "Properties":{
-            "Path":"/",
-            "Roles":[
-               {
-                  "Ref":"TravisToCodeDeployRole"
-               }
-            ]
-         }
-      },
+           "Path":"/",
+
+            "Roles":[{"Ref":"TravisToCodeDeployRole"}]
+                }
+         },
       "TravisToCodeDeployPolicy":{
          "Type":"AWS::IAM::ManagedPolicy",
+<<<<<<< HEAD
          "Properties":{
             "Users":[
                "travis"
             ],
             "ManagedPolicyName":"TravisToCodeDeployPolicy",
+=======
+          "Properties":{
+            "Users":[
+               "travis"
+            ],
+
+            "ManagedPolicyName":"TravisToCodeDeployPolicy",
+
+>>>>>>> 43326347b3bcdd00b7bc9c19dd3aeb7311344095
             "PolicyDocument":{
                "Version":"2012-10-17",
                "Statement":[
@@ -391,40 +442,6 @@
             "Path":"/"
          }
       },
-
-      "CodeDeployEC2ServiceRole2":{
-         "Type":"AWS::IAM::Role",
-         "Properties":{
-        "ManagedPolicyArns": [
-            "arn:aws:iam::aws:policy/AmazonRDSFullAccess",
-            "arn:aws:iam::aws:policy/AmazonS3FullAccess",
-            "arn:aws:iam::aws:policy/AmazonSNSFullAccess"
-        ],
-            "AssumeRolePolicyDocument":{
-               "Version":"2012-10-17",
-               "Statement":[
-                  {
-                     "Effect":"Allow",
-                     "Principal":{
-                        "Service":[
-                           "ec2.amazonaws.com"
-                        ]
-                     },
-                     "Action":[
-                        "sts:AssumeRole"
-                     ]
-                  }
-               ]
-            },
-            "Path":"/"
-         }
-      },
-
-
-
-
-
-
       "CodeDeployServiceRole":{
          "Type":"AWS::IAM::Role",
          "Properties":{
@@ -458,39 +475,8 @@
                "Ref":"s3domain"
             }
          }
-      },
-      "CodeDeployApplication":{
-         "Type":"AWS::CodeDeploy::Application",
-         "Properties":{
-            "ApplicationName":{
-               "Ref":"appname"
-            }
-         }
-      },
-      "CodeDeployDeploymentGroup":{
-         "Type":"AWS::CodeDeploy::DeploymentGroup",
-         "Properties":{
-            "ApplicationName":{
-               "Ref":"appname"
-            },
-            "Ec2TagFilters":[
-               {
-                  "Key":"Name",
-                  "Value":"MyEC2Instance",
-                  "Type":"KEY_AND_VALUE"
-               }
-            ],
-            "ServiceRoleArn":{
-               "Fn::GetAtt":[
-                  "CodeDeployServiceRole",
-                  "Arn"
-               ]
-            },
-            "DeploymentGroupName":{
-               "Ref":"depname"
-            }
-         }
       }
+
    },
    "Outputs":{
       "CodeDeployServiceRoleArn":{
@@ -503,4 +489,4 @@
          }
       }
    }
-}
+ }

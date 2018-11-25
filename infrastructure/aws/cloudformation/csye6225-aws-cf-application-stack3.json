@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
    "AWSTemplateFormatVersion":"2010-09-09",
    "Parameters":{
       "vpcTag":{
@@ -70,6 +71,98 @@
                   "FromPort":22,
                   "ToPort":22,
                   "CidrIp":"0.0.0.0/0"
+=======
+"AWSTemplateFormatVersion" : "2010-09-09",
+"Description" : "Application Stack",
+  "Parameters": {
+    "vpcTag": {
+      "Type": "String"
+    },
+    "stackName":{
+      "Type":"String"
+    },
+    "igTag" : {
+      "Type" : "String"
+    },
+    "publicRouteTableTag" : {
+      "Type" : "String"
+    },
+    "privateRouteTableTag" : {
+      "Type" : "String"
+    },
+    "webSubnetTag" : {
+      "Type" : "String"
+    },
+    "dbSubnetTag" : {
+      "Type" : "String"
+    },
+    "webServerSecurityGroupNameTag":
+    {
+      "Type" : "String"
+    },
+    "dbSecurityGroupNameTag" : {
+      "Type" : "String"
+    },
+    "s3Domain" : {
+    "Type" : "String"
+    },
+    "domainname" : {
+    "Description" : "Domain Name",
+    "Type" : "String"
+  },
+  "lambdaArn" : {
+   "Description" : "Lamda Function ARN",
+   "Type" : "String"
+ },
+    "iaminstance" : {
+    "Description" : "Instance Profile Name for CodeDeploy to S3",
+    "Type" : "String"
+  },
+   "MySNSTopic" :{
+     "Description" : "MySNSTopic",
+     "Type" : "String",
+     "Default":"passwword_reset"
+   },
+   "appname" : {
+     "Description" : "Application Name",
+     "Type" : "String"
+
+   },
+   "depname" : {
+     "Description" : "Deployment Group Name",
+     "Type" : "String"
+   },
+   "codedeployRole":{
+     "Description" : "Code Deploy Service Role",
+     "Type" : "String"
+   },
+  "DBUsername" : {
+             "Default" : "csye6225master",
+             "Description" : "The database admin account username",
+             "Type": "String",
+             "AllowedPattern" : "[a-zA-Z][a-zA-Z0-9]*"
+         },
+         "DBPassword" : {
+             "Default": "csye6225password",
+             "Description" : "The database admin account password",
+             "Type": "String",
+             "AllowedPattern" : "[a-zA-Z0-9]*"
+         }
+  },
+  "Resources" :
+  {
+
+     "webServerSecurityGroup": {
+       "Type": "AWS::EC2::SecurityGroup",
+       "Properties": {
+       "GroupName": {"Ref" : "webServerSecurityGroupNameTag"},
+       "GroupDescription": "Enable HTTP access via port 80, SSH access via port 22",
+       "SecurityGroupIngress" : [{
+                   "IpProtocol" : "tcp",
+                   "FromPort": 22,
+                   "ToPort" : 22,
+                   "CidrIp" : "0.0.0.0/0"
+>>>>>>> 43326347b3bcdd00b7bc9c19dd3aeb7311344095
                },
                {
                   "IpProtocol":"tcp",
@@ -252,6 +345,7 @@
                               ]
                            ]
                         },
+<<<<<<< HEAD
                         {
                            "Fn::Join":[
                               "",
@@ -364,6 +458,128 @@
          "Type":"AWS::SNS::Topic",
          "Properties":{
             "TopicName":"password_reset",
+=======
+                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.profiles.active=s3developement\"'>> /opt/tomcat/bin/setenv.sh\n"]]},
+                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=",{"Ref":"DBUsername"},"\"' >> /opt/tomcat/bin/setenv.sh\n"]]},
+                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=",{"Ref":"DBPassword"},"\"' >> /opt/tomcat/bin/setenv.sh\n"]]},
+                {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dbucket.name=",{"Ref":"s3Domain"},"\"' >> /opt/tomcat/bin/setenv.sh\n"]]},
+
+                                             "chmod +x /opt/tomcat/bin/setenv.sh",
+                                             "systemctl daemon-reload",
+                                             "systemctl enable tomcat.service",
+                                             "systemctl start tomcat.service",
+
+
+
+                                             "cd /opt/",
+                                             "touch cloudwatch-config.json",
+		          "echo '{\"agent\":{' >> cloudwatch-config.json",
+	 	          "echo '\"metrics_collection_interval\":10,' >> cloudwatch-config.json",
+		          "echo '\"logfile\": \"/var/logs/amazon-cloudwatch-agent.log\"' >> cloudwatch-config.json",
+		          "echo '},' >> cloudwatch-config.json",
+		          "echo '\"logs\":{\"logs_collected\": {\"files\": {\"collect_list\": [{\"file_path\": \"/opt/tomcat/logs/csye6225.log\",\"log_group_name\": \"csye6225_fall2018\",\"log_stream_name\": \"webapp\"}]}},\"log_stream_name\": \"cloudwatch_log_stream\"},' >> cloudwatch-config.json",
+		          "echo '\"metrics\":{' >> cloudwatch-config.json",
+		          "echo '\"metrics_collected\":{' >> cloudwatch-config.json",
+		          "echo '\"statsd\":{' >> cloudwatch-config.json",
+		          "echo '\"service_address\":\":8125\", \"metrics_collection_interval\":10, \"metrics_aggregation_interval\":0 }}}}' >> cloudwatch-config.json",
+              "wget https://s3.amazonaws.com/amazoncloudwatch-agent/centos/amd64/latest/amazon-cloudwatch-agent.rpm",
+              "rpm -U ./amazon-cloudwatch-agent.rpm",
+		          "/opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/cloudwatch-config.json -s",
+              "cd /",
+              "wget https://s3.amazonaws.com/configfileforcloudwatch/amazon-cloudwatch-agent.service",
+              "cp amazon-cloudwatch-agent.service /usr/lib/systemd/system/",
+              "systemctl enable amazon-cloudwatch-agent.service",
+              "systemctl start amazon-cloudwatch-agent.service",
+              "systemctl daemon-reload",
+              "systemctl enable amazon-cloudwatch-agent.service",
+              "systemctl start amazon-cloudwatch-agent.service",
+              "systemctl enable tomcat.service",
+              "systemctl start tomcat.service"
+
+
+
+
+                            ]
+                        ]
+                    }
+                }
+            },
+            "DependsOn" : "RDSDB"
+        }
+    ,
+
+  "S3" : {
+     "Type" : "AWS::S3::Bucket",
+     "Properties" : {
+       "BucketName" :{"Ref" : "s3Domain"}
+     }
+     },
+     "DynamoDBTable": {
+     "Type" : "AWS::DynamoDB::Table",
+     "Properties" : {
+       "AttributeDefinitions" : [
+         {"AttributeName" : "id", "AttributeType" : "S"}
+       ],
+       "KeySchema" : [
+         {"AttributeName" : "id", "KeyType" : "HASH"}
+       ],
+       "ProvisionedThroughput" : {
+         "ReadCapacityUnits" : 5,
+         "WriteCapacityUnits" : 5
+       },
+       "TimeToLiveSpecification":{
+       "AttributeName" : "ttl",
+       "Enabled" : true
+       },
+       "TableName": {"Fn::Join" : ["",[{"Ref" : "stackName"},"-csye6225-dynamodb-table"]] }
+     }
+   },
+
+      "RDSDB" :{
+        "Type" : "AWS::RDS::DBInstance",
+        "Properties" :
+          {
+            "AllocatedStorage" : "5",
+            "DBInstanceClass" : "db.t2.medium",
+            "DBInstanceIdentifier" :{"Fn::Join" : ["",[{"Ref" : "stackName"},"-csye6225-fall2018-db-instance"]] },
+            "DBSubnetGroupName" :{"Ref" : "DBSubnetGroup"},
+            "DBName" : "csye6225",
+            "Engine" : "mysql",
+            "EngineVersion" : "5.6.37",
+            "MasterUsername" : "csye6225master",
+            "MasterUserPassword" : "csye6225password",
+            "MultiAZ" : "false",
+            "PubliclyAccessible" : "false",
+            "VPCSecurityGroups": [{"Ref": "dbSecurityGroup"}]
+          }
+      },
+
+
+      "CodeDeployApplication": {
+         "Type": "AWS::CodeDeploy::Application",
+         "Properties": {
+           "ApplicationName" : {"Ref" : "appname"}
+         }
+       },
+
+       "CodeDeployDeploymentGroup": {
+        "Type": "AWS::CodeDeploy::DeploymentGroup",
+        "Properties": {
+          "ApplicationName" : {"Ref" : "CodeDeployApplication"},
+          "Ec2TagFilters" : [{
+            "Key" : "Name",
+            "Value" : "MyEC2Instance",
+            "Type" : "KEY_AND_VALUE"
+          }],
+          "ServiceRoleArn" : {"Ref" : "codedeployRole"},
+          "DeploymentGroupName" : {"Ref" : "depname"}
+        }
+       }
+
+  },
+
+  "Outputs": {
+>>>>>>> 43326347b3bcdd00b7bc9c19dd3aeb7311344095
 
          "Subscription":[
             {

@@ -25,7 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Base64;
 import java.util.Date;
-
+import com.timgroup.statsd.StatsDClient;
 
 
 @Controller
@@ -33,13 +33,16 @@ public class HomeController {
 
   @Autowired
   private UserService userService;
+  
+  @Autowired
+	private StatsDClient statsDClient;
 
   private final static Logger logger = LoggerFactory.getLogger(HomeController.class);
 
   @RequestMapping(value="/time", method= RequestMethod.GET, produces= "application/json")
   @ResponseBody
   public String welcomeUser(HttpServletRequest request, HttpServletResponse response){
-
+	  statsDClient.incrementCounter("endpoint.time.http.get");
 	  JsonObject jO = new JsonObject();
 	  try {
 		    	String header = request.getHeader("Authorization");
@@ -72,6 +75,7 @@ public class HomeController {
   @RequestMapping(value = "/user/register", method = RequestMethod.POST, produces = "application/json")
   @ResponseBody
   public String registerUser(@RequestBody User user) {
+	  statsDClient.incrementCounter("endpoint.registerUser.http.get");
     JsonObject jo = new JsonObject();
     try {
 	    User userExists = userService.findByEmail(user.getEmail());
@@ -104,6 +108,7 @@ public class HomeController {
   @RequestMapping(value = "/resetPassword", method = RequestMethod.POST, produces = "application/json")
   @ResponseBody
   public String forgotPassword(@RequestBody User user) {
+	  statsDClient.incrementCounter("endpoint.resetPassowrd.http.get");
     JsonObject jo = new JsonObject();
   
     if(user!=null){
