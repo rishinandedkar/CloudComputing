@@ -43,17 +43,17 @@ public class HomeControllerTest {
         MockitoAnnotations.initMocks(this);
 
         User createUser = new User();
-        createUser.setEmail("vivek");
-        createUser.setPassword("vivek");
+        createUser.setEmail("mansii.w@gmail.com");
+        createUser.setPassword("Qwerty@1");
 
 
-        when(userRepository.findByEmail("vivek")).thenReturn(createUser);
+        when(userRepository.findByEmail("mansii.w@gmail.com")).thenReturn(createUser);
     }
 
     @Test
     public void register() throws Exception {
 
-        User retrievedUser = userRepository.findByEmail("vivek");
-        assertEquals(retrievedUser.getEmail(),"vivek");
+        User retrievedUser = userRepository.findByEmail("mansii.w@gmail.com");
+        assertEquals(retrievedUser.getEmail(),"mansii.w@gmail.com");
     }
 }
