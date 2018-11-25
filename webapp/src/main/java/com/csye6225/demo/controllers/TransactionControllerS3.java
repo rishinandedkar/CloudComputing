@@ -43,6 +43,7 @@ import com.csye6225.demo.service.S3ServicesImpl;
 import com.csye6225.demo.service.TransactionService;
 import com.csye6225.demo.service.UserService;
 import com.google.gson.JsonObject;
+import com.timgroup.statsd.StatsDClient;
 
 @Configuration
 @Profile("s3developement")
@@ -71,14 +72,15 @@ public class TransactionControllerS3 {
 	@Autowired
     private S3ServicesImpl s3ServiceImpl;
 	
-	
+	@Autowired
+	private StatsDClient statsDClient;
 	/*
 	  Create Transaction 
 	*/	
 	
 	 @RequestMapping(value="/user/transaction", method= RequestMethod.POST, produces= "application/json")
 	    public String createTransaction(@Valid @RequestBody Transaction transaction, HttpServletRequest request,/* @RequestParam("files") MultipartFile[] files,*/ HttpServletResponse response) {
-
+	  	  statsDClient.incrementCounter("endpoint.createtransaction.http.get");
 	    	JsonObject jo = new JsonObject();
 	    	try {
 		        String header = request.getHeader("Authorization");
@@ -138,6 +140,7 @@ public class TransactionControllerS3 {
 
 		    @DeleteMapping("/user/transaction/{id}")
 		    public String deleteTransaction(@PathVariable(value = "id") String transactionId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+			  	  statsDClient.incrementCounter("endpoint.deletetransaction.http.get");
 
 
 		        JsonObject jo = new JsonObject();
@@ -195,6 +198,7 @@ public class TransactionControllerS3 {
 		    
 		    @GetMapping("/user/transactions")
 		    public String getTransactionByUserId(HttpServletRequest request, HttpServletResponse response) {
+			  	  statsDClient.incrementCounter("endpoint.createtransaction.http.get");
 
 
 
@@ -244,6 +248,7 @@ public class TransactionControllerS3 {
 
 		    @PutMapping("/user/transaction/{id}")
 		    public String getTransactionByUserId(@RequestBody Transaction transaction,@PathVariable(value = "id") String transactionId, HttpServletRequest request, HttpServletResponse response) {
+			  	  statsDClient.incrementCounter("endpoint.createtransactionbyid.http.get");
 
 
 		        JsonObject jo = new JsonObject();
@@ -315,6 +320,7 @@ public class TransactionControllerS3 {
 
 	 @PostMapping("/user/transaction/{id}/attachments")
 	    public String attachNewReceiptToTransaction(@RequestParam(value = "receipts") MultipartFile[] receipts, @PathVariable(value = "id") String transactionId, HttpServletRequest request, HttpServletResponse response) {
+	  	  statsDClient.incrementCounter("endpoint.attachnewreceipt.http.get");
 
 	        JsonObject jo = new JsonObject();
 	        try {
@@ -411,6 +417,7 @@ public class TransactionControllerS3 {
     
     @GetMapping("/user/transaction/{id}/attachments")
     public String getTransactionReceipt(@PathVariable(value = "id") String transactionId, HttpServletRequest request, HttpServletResponse response) {
+	  	  statsDClient.incrementCounter("endpoint.gettransactionreceipt.http.get");
 
 
         JsonObject jo = new JsonObject();
@@ -478,6 +485,7 @@ public class TransactionControllerS3 {
 
     @DeleteMapping("/user/transaction/{id}/attachments/{idAttachments}")
 	public String deleteReceiptById(@PathVariable(value = "id") String transactionId, @PathVariable(value = "idAttachments") String idAttachment, HttpServletRequest request, HttpServletResponse response) throws IOException {
+	  	  statsDClient.incrementCounter("endpoint.deletereceipt.http.get");
 
 	    JsonObject jo = new JsonObject();
 	    try {
@@ -556,7 +564,8 @@ public class TransactionControllerS3 {
 	
   	@PutMapping("/user/transaction/{id}/attachments/{idAttachments}")
       public String UpdateReceipt(@RequestParam(value = "receipts") MultipartFile[] receipts, @PathVariable(value = "id") String transactionId, @PathVariable(value = "idAttachments") String idAttachment, HttpServletRequest request, HttpServletResponse response) throws IllegalStateException, IOException {
-  	
+	  	  statsDClient.incrementCounter("endpoint.updatetransaction.http.get");
+
   		JsonObject jo = new JsonObject();
   		try {
   			deleteReceiptById(transactionId, idAttachment, request, response);
