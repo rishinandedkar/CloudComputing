@@ -118,7 +118,17 @@
          "Key" : "Name",
          "Value" : "MyEC2Instance",
          "PropagateAtLaunch" : "true"
-         } ],
+         },
+         {
+          "Key" : "Name2",
+          "Value" : "MyEC2Instance2",
+          "PropagateAtLaunch" : "true"
+          },
+          {
+           "Key" : "Name3",
+           "Value" : "MyEC2Instance3",
+           "PropagateAtLaunch" : "true"
+           } ],
         "TargetGroupARNs" : [ { "Ref" : "ALBTargetGroup" } ]
       }
     },
@@ -466,6 +476,15 @@
             {
                "Key":"Name",
                "Value":"MyEC2Instance",
+               "Type":"KEY_AND_VALUE"
+            },
+
+            { "Key":"Name2",
+               "Value":"MyEC2Instance2",
+               "Type":"KEY_AND_VALUE"
+            },
+            { "Key":"Name3",
+               "Value":"MyEC2Instance3",
                "Type":"KEY_AND_VALUE"
             }
          ],
