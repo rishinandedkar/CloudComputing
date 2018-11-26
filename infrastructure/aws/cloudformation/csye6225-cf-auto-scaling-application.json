@@ -118,17 +118,8 @@
          "Key" : "Name",
          "Value" : "MyEC2Instance",
          "PropagateAtLaunch" : "true"
-         },
-         {
-          "Key" : "Name2",
-          "Value" : "MyEC2Instance2",
-          "PropagateAtLaunch" : "true"
-          },
-          {
-           "Key" : "Name3",
-           "Value" : "MyEC2Instance3",
-           "PropagateAtLaunch" : "true"
-           } ],
+         }
+       ],
         "TargetGroupARNs" : [ { "Ref" : "ALBTargetGroup" } ]
       }
     },
@@ -366,19 +357,6 @@
       },
 
       "ALBListener" : {
-        "Type" : "AWS::ElasticLoadBalancingV2::Listener",
-        "Properties" : {
-          "DefaultActions" : [{
-            "Type" : "forward",
-            "TargetGroupArn" : { "Ref" : "ALBTargetGroup" }
-          }],
-          "LoadBalancerArn" : { "Ref" : "ApplicationLoadBalancer" },
-          "Port" : "80",
-          "Protocol" : "HTTP"
-        }
-      },
-
-      "ALBListener" : {
        "Type" : "AWS::ElasticLoadBalancingV2::Listener",
        "Properties" : {
          "DefaultActions" : [{
@@ -399,13 +377,17 @@
       "HealthCheckIntervalSeconds" : 30,
       "HealthCheckTimeoutSeconds" : 5,
       "HealthyThresholdCount" : 3,
+      "HealthCheckPath":"/",
+      "HealthCheckPort":8080,
       "Port" : 8080,
       "Protocol" : "HTTP",
-      "UnhealthyThresholdCount" : 5,
+      "UnhealthyThresholdCount" : 10,
       "TargetGroupAttributes" : [
-          {"Key" : "stickiness.enabled","Value" : "true"}
+          {"Key" : "deregistration_delay.timeout_seconds",
+          "Value" : "20"}
       ],
       "VpcId" : {"Ref" : "vpcid"}
+
     }
   },
 
@@ -476,15 +458,6 @@
             {
                "Key":"Name",
                "Value":"MyEC2Instance",
-               "Type":"KEY_AND_VALUE"
-            },
-
-            { "Key":"Name2",
-               "Value":"MyEC2Instance2",
-               "Type":"KEY_AND_VALUE"
-            },
-            { "Key":"Name3",
-               "Value":"MyEC2Instance3",
                "Type":"KEY_AND_VALUE"
             }
          ],
