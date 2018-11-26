@@ -118,17 +118,8 @@
          "Key" : "Name",
          "Value" : "MyEC2Instance",
          "PropagateAtLaunch" : "true"
-         },
-         {
-          "Key" : "Name2",
-          "Value" : "MyEC2Instance2",
-          "PropagateAtLaunch" : "true"
-          },
-          {
-           "Key" : "Name3",
-           "Value" : "MyEC2Instance3",
-           "PropagateAtLaunch" : "true"
-           } ],
+         }
+         ],
         "TargetGroupARNs" : [ { "Ref" : "ALBTargetGroup" } ]
       }
     },
@@ -366,19 +357,6 @@
       },
 
       "ALBListener" : {
-        "Type" : "AWS::ElasticLoadBalancingV2::Listener",
-        "Properties" : {
-          "DefaultActions" : [{
-            "Type" : "forward",
-            "TargetGroupArn" : { "Ref" : "ALBTargetGroup" }
-          }],
-          "LoadBalancerArn" : { "Ref" : "ApplicationLoadBalancer" },
-          "Port" : "80",
-          "Protocol" : "HTTP"
-        }
-      },
-
-      "ALBListener" : {
        "Type" : "AWS::ElasticLoadBalancingV2::Listener",
        "Properties" : {
          "DefaultActions" : [{
@@ -405,7 +383,13 @@
       "TargetGroupAttributes" : [
           {"Key" : "stickiness.enabled","Value" : "true"}
       ],
-      "VpcId" : {"Ref" : "vpcid"}
+      "VpcId" : {"Ref" : "vpcid"},
+      "Tags":[
+              {
+                 "Key":"Name",
+                 "Value":"MyEC2Instance"
+              }
+           ]
     }
   },
 
@@ -477,15 +461,6 @@
                "Key":"Name",
                "Value":"MyEC2Instance",
                "Type":"KEY_AND_VALUE"
-            },
-
-            { "Key":"Name2",
-               "Value":"MyEC2Instance2",
-               "Type":"KEY_AND_VALUE"
-            },
-            { "Key":"Name3",
-               "Value":"MyEC2Instance3",
-               "Type":"KEY_AND_VALUE"
             }
          ],
          "LoadBalancerInfo": {
@@ -508,7 +483,7 @@
         "AliasTarget": {
             "HostedZoneId" : {"Fn::GetAtt": ["ApplicationLoadBalancer", "CanonicalHostedZoneID"]},
             "DNSName": {"Fn::GetAtt": ["ApplicationLoadBalancer", "DNSName"]},
-            "EvaluateTargetHealth": "false"
+            "EvaluateTargetHealth": "true"
         }
       }
     }
