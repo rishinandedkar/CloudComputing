@@ -50,4 +50,5 @@ Build and Deploy instructions for web application:
 20. Two profiles created to run the application namely application and s3developement.
 21. When application profile is made active via application.properties, the attachment would be saved in a local directory of the computer.
 22. Whereas when the s3developement profile is made active via application.properties, the attachment would be saved in the S3 bucket of AWS. 
+23. Added lambda functionality!!!!
 
