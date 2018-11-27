@@ -45,19 +45,12 @@ echo "trimdomainname:$trimdomain"
 s3Domain=$trimdomain
 #echo "s3domain:$s3Domain"
 domainname=$s3Domain
-<<<<<<< HEAD
-fnName="myFunction"
-lambdaArn=$(aws lambda get-function --function-name $fnName --query Configuration.FunctionArn --output text)
-echo "lambdaArn: $lambdaArn"
-
-=======
 #fnName="test"
 #lambdaArn=$(aws lambda get-function --function-name $fnName --query Configuration.FunctionArn --output text)
 #echo "lambdaArn: $lambdaArn"
 SSLArn=$(aws acm list-certificates --query "CertificateSummaryList[?DomainName=='www.$trimdomain'].CertificateArn" --output text
 )
 echo "SSLArn: $SSLArn"
->>>>>>> 43326347b3bcdd00b7bc9c19dd3aeb7311344095
 
 stackId=$(aws cloudformation create-stack --stack-name $stackName --template-body \
  file://csye6225-cf-auto-scaling-application.json --parameters \
