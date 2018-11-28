@@ -337,7 +337,7 @@
                "Statistic": "Average",
                "Period": "60",
                "EvaluationPeriods": "1",
-               "Threshold": "90",
+               "Threshold": "10",
                "AlarmActions": [ { "Ref": "WebServerScaleUpPolicy" } ],
                "Dimensions": [
                  {
@@ -357,7 +357,7 @@
                "Statistic": "Average",
                "Period": "60",
                "EvaluationPeriods": "1",
-               "Threshold": "70",
+               "Threshold": "8",
                "AlarmActions": [ { "Ref": "WebServerScaleDownPolicy" } ],
                "Dimensions": [
                  {
