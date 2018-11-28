@@ -702,7 +702,7 @@
                  },
                  "TextTransformation": "NONE",
                  "ComparisonOperator": "GT",
-                 "Size": "10000000"
+                 "Size": "20000"
               },
               {
                  "FieldToMatch": {
