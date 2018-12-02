@@ -13,7 +13,13 @@
     "privateRouteTableTag" : {
       "Type" : "String"
     },
-    "webSubnetTag" : {
+    "webSubnetTag1" : {
+      "Type" : "String"
+    },
+    "webSubnetTag2" : {
+      "Type" : "String"
+    },
+    "webSubnetTag3" : {
       "Type" : "String"
     },
     "dbSubnetTag" : {
@@ -39,7 +45,7 @@
         "CidrBlock" : "10.0.1.0/24",
         "AvailabilityZone" : "us-east-1a",
         "MapPublicIpOnLaunch" : true,
-        "Tags" : [ {"Key" : "Name", "Value" : {"Ref" : "webSubnetTag"}} ],
+        "Tags" : [ {"Key" : "Name", "Value" : {"Ref" : "webSubnetTag1"}} ],
         "VpcId" : {"Ref" : "myVPC"}
       }
     },
@@ -58,7 +64,7 @@
         "CidrBlock" : "10.0.3.0/24",
         "AvailabilityZone" : "us-east-1b",
         "MapPublicIpOnLaunch" : true,
-        "Tags" : [ {"Key" : "Name", "Value" : {"Ref" : "webSubnetTag"}} ],
+        "Tags" : [ {"Key" : "Name", "Value" : {"Ref" : "webSubnetTag2"}} ],
         "VpcId" : {"Ref" : "myVPC"}
       }
 },
@@ -77,7 +83,7 @@
           "CidrBlock" : "10.0.5.0/24",
           "AvailabilityZone" : "us-east-1c",
           "MapPublicIpOnLaunch" : true,
-          "Tags" : [ {"Key" : "Name", "Value" : {"Ref" : "webSubnetTag"}} ],
+          "Tags" : [ {"Key" : "Name", "Value" : {"Ref" : "webSubnetTag3"}} ],
           "VpcId" : {"Ref" : "myVPC"}
         }
     },
@@ -178,7 +184,57 @@
      "DBSubnetGroupName" : {"Fn::Join" : ["",[{"Ref" : "stackName"},"-csye6225-db-subnetgroup"]] },
      "SubnetIds" : [ {"Ref" : "dbSubnet1"},{"Ref" : "dbSubnet2"},{"Ref" : "dbSubnet3"}]
      }
+},
+"WebServerSecurityGroup": {
+          "Type": "AWS::EC2::SecurityGroup",
+          "Properties": {
+          "GroupName" : {"Fn::Join" : ["",[{"Ref" : "stackName"},"-csye6225-webapp-secuitygroup"]] },
+          "GroupDescription": "HTTP access via port 8080",
+          "VpcId": { "Ref" : "myVPC" },
+          "SecurityGroupIngress": [
+              {
+                  "IpProtocol": "tcp",
+                  "FromPort": "8080",
+                  "ToPort": "8080",
+                  "CidrIp": "0.0.0.0/0"
+              }
+          ]
+      }
+  },
+  "LoadBalancerSecurityGroup": {
+   "Type": "AWS::EC2::SecurityGroup",
+   "Properties": {
+   "GroupName" : {"Fn::Join" : ["",[{"Ref" : "stackName"},"-csye6225-lb-secuitygroup"]] },
+   "GroupDescription": "Access Load Balancer for port 443 for HTTPS",
+   "VpcId": { "Ref" : "myVPC" },
+   "SecurityGroupIngress": [
+       {
+           "IpProtocol": "tcp",
+           "FromPort": "443",
+           "ToPort": "443",
+           "CidrIp": "0.0.0.0/0"
+       }
+   ]
 }
+},
+"DBEC2SecurityGroup": {
+  "Type" : "AWS::EC2::SecurityGroup",
+  "Properties" : {
+     "GroupName" : {"Fn::Join" : ["",[{"Ref" : "stackName"},"-csye6225-db-secuitygroup"]] },
+     "GroupDescription" : "ingress traffic from Web App",
+     "SecurityGroupIngress" : [
+          {
+         "Description" : "ingress rule on 3306",
+         "FromPort" : "3306",
+         "IpProtocol" : "tcp",
+         "SourceSecurityGroupId" : { "Ref" : "WebServerSecurityGroup"},
+         "ToPort" : "3306"
+       }
+        ],
+     "VpcId" : { "Ref" : "myVPC" }
+  }
+}
+
 
 },
   "Outputs" : {

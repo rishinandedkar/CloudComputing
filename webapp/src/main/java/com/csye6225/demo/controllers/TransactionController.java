@@ -7,6 +7,8 @@ import com.csye6225.demo.repository.TransactionRepository;
 import com.csye6225.demo.service.TransactionService;
 import com.csye6225.demo.service.UserService;
 import com.google.gson.JsonObject;
+import com.timgroup.statsd.StatsDClient;
+
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -58,6 +60,9 @@ public class TransactionController {
 	@Autowired
     private S3ServicesImpl s3ServiceImpl;
 	
+	@Autowired
+	private StatsDClient statsDClient;
+	
 	
 	private static String path=  "C:\\Users\\Mansi\\AppData\\Local\\Temp\\tomcat";
 
@@ -67,7 +72,7 @@ public class TransactionController {
 
 	    @RequestMapping(value="/user/transaction", method= RequestMethod.POST, produces= "application/json")
 	    public String createTransaction(@Valid @RequestBody Transaction transaction, HttpServletRequest request,/* @RequestParam("files") MultipartFile[] files,*/ HttpServletResponse response) {
-
+	  	  statsDClient.incrementCounter("endpoint.createtransaction.http.get");
 	    	JsonObject jo = new JsonObject();
 	    	try {
 		        String header = request.getHeader("Authorization");
@@ -129,7 +134,7 @@ public class TransactionController {
 
 	    @DeleteMapping("/user/transaction/{id}")
 	    public String deleteTransaction(@PathVariable(value = "id") String transactionId, HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+	  	  statsDClient.incrementCounter("endpoint.deleteTransaction.http.get");
 
 	        JsonObject jo = new JsonObject();
 	        try {
@@ -186,6 +191,7 @@ public class TransactionController {
 	    
 	    @GetMapping("/user/transactions")
 	    public String getTransactionByUserId(HttpServletRequest request, HttpServletResponse response) {
+	  	  statsDClient.incrementCounter("endpoint.gettransactions.http.get");
 
 
 
@@ -235,6 +241,7 @@ public class TransactionController {
 
 	    @PutMapping("/user/transaction/{id}")
 	    public String getTransactionByUserId(@RequestBody Transaction transaction,@PathVariable(value = "id") String transactionId, HttpServletRequest request, HttpServletResponse response) {
+	  	  statsDClient.incrementCounter("endpoint.gettransactionbyid.http.get");
 
 
 	        JsonObject jo = new JsonObject();
@@ -306,6 +313,7 @@ public class TransactionController {
 
 	    @GetMapping("/user/transaction/{id}/attachments")
 	    public String getTransactionReceipt(@PathVariable(value = "id") String transactionId, HttpServletRequest request, HttpServletResponse response) {
+	  	  statsDClient.incrementCounter("endpoint.gettransactionreceipt.http.get");
 
 
 	        JsonObject jo = new JsonObject();
@@ -372,7 +380,7 @@ public class TransactionController {
 
 	    @PostMapping("/user/transaction/{id}/attachments")
 	    public String attachNewReceiptToTransaction(@RequestParam(value = "receipts") MultipartFile[] receipts, @PathVariable(value = "id") String transactionId, HttpServletRequest request, HttpServletResponse response) {
-
+	  	  statsDClient.incrementCounter("endpoint.attachreceipt.http.get");
 	        JsonObject jo = new JsonObject();
 	        try {
 		        String header = request.getHeader("Authorization");
@@ -467,7 +475,7 @@ public class TransactionController {
 
 	@DeleteMapping("/user/transaction/{id}/attachments/{idAttachments}")
 	public String deleteReceiptById(@PathVariable(value = "id") String transactionId, @PathVariable(value = "idAttachments") String idAttachment, HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+		  statsDClient.incrementCounter("endpoint.deleteReceipt.http.get");
 	    JsonObject jo = new JsonObject();
 	    try {
 		    String header = request.getHeader("Authorization");
