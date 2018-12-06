@@ -411,9 +411,6 @@
                   "Type":"redirect",
                   "RedirectConfig":{
                      "Protocol":"HTTPS",
-                     "Host":"#{host}",
-                     "Query":"#{query}",
-                     "Path":"/#{path}",
                      "Port":"443",
                      "StatusCode":"HTTP_301"
                   }

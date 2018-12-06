@@ -48,7 +48,7 @@ domainname=$s3Domain
 #fnName="test"
 #lambdaArn=$(aws lambda get-function --function-name $fnName --query Configuration.FunctionArn --output text)
 #echo "lambdaArn: $lambdaArn"
-SSLArn=$(aws acm list-certificates --query "CertificateSummaryList[?DomainName=='$trimdomain'].CertificateArn" --output text
+SSLArn=$(aws acm list-certificates --query "CertificateSummaryList[?DomainName=='www.$trimdomain'].CertificateArn" --output text
 )
 echo "SSLArn: $SSLArn"
 
