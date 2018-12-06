@@ -42,6 +42,7 @@ public class HomeController {
   @RequestMapping(value="/healthCheck",method = RequestMethod.GET, produces="application/json")
   @ResponseBody
   public String healthCheck() {
+	  statsDClient.incrementCounter("endpoint.healthCheck.http.get");
 	  JsonObject jo = new JsonObject();
 	  jo.addProperty("message", "api hit");
 	  return "success";
