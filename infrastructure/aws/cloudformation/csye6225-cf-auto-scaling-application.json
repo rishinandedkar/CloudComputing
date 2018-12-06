@@ -403,6 +403,30 @@
        }
      },
 
+     "RedirectListener":{
+         "Type":"AWS::ElasticLoadBalancingV2::Listener",
+         "Properties":{
+            "DefaultActions":[
+               {
+                  "Type":"redirect",
+                  "RedirectConfig":{
+                     "Protocol":"HTTPS",
+                     "Host":"#{host}",
+                     "Query":"#{query}",
+                     "Path":"/#{path}",
+                     "Port":"443",
+                     "StatusCode":"HTTP_301"
+                  }
+               }
+            ],
+            "LoadBalancerArn":{
+               "Ref":"ApplicationLoadBalancer"
+            },
+            "Port":80,
+            "Protocol":"HTTP"
+         }
+      },
+
      "ALBTargetGroup" : {
     "Type" : "AWS::ElasticLoadBalancingV2::TargetGroup",
     "Properties" : {
