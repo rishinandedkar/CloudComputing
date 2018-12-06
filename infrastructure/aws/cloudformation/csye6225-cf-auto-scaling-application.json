@@ -331,12 +331,12 @@
        "CPUAlarmHigh": {
             "Type": "AWS::CloudWatch::Alarm",
             "Properties": {
-               "AlarmDescription": "Scale-up if CPU > 10% for 1 minutes",
+               "AlarmDescription": "Scale-up if CPU > 10% for 10 minutes",
                "MetricName": "CPUUtilization",
                "Namespace": "AWS/EC2",
                "Statistic": "Average",
-               "Period": "60",
-               "EvaluationPeriods": "1",
+               "Period": "300",
+               "EvaluationPeriods": "2",
                "Threshold": "10",
                "AlarmActions": [ { "Ref": "WebServerScaleUpPolicy" } ],
                "Dimensions": [
@@ -351,12 +351,12 @@
            "CPUAlarmLow": {
             "Type": "AWS::CloudWatch::Alarm",
             "Properties": {
-               "AlarmDescription": "Scale-down if CPU < 5% for 1 minutes",
+               "AlarmDescription": "Scale-down if CPU < 5% for 10 minutes",
                "MetricName": "CPUUtilization",
                "Namespace": "AWS/EC2",
                "Statistic": "Average",
-               "Period": "60",
-               "EvaluationPeriods": "1",
+               "Period": "300",
+               "EvaluationPeriods": "2",
                "Threshold": "8",
                "AlarmActions": [ { "Ref": "WebServerScaleDownPolicy" } ],
                "Dimensions": [
@@ -428,14 +428,17 @@
     "Type" : "AWS::ElasticLoadBalancingV2::TargetGroup",
     "Properties" : {
       "Name" : "ALBTargetGroup",
-      "HealthCheckIntervalSeconds" : 30,
+      "HealthCheckIntervalSeconds" : 60,
       "HealthCheckTimeoutSeconds" : 5,
       "HealthyThresholdCount" : 3,
       "HealthCheckPath":"/",
       "HealthCheckPort":8080,
       "Port" : 8080,
       "Protocol" : "HTTP",
-      "UnhealthyThresholdCount" : 10,
+      "UnhealthyThresholdCount" : 5,
+      "Matcher":{
+        "HttpCode":"200,302"
+        },
       "TargetGroupAttributes" : [
           {"Key" : "deregistration_delay.timeout_seconds",
           "Value" : "20"}
