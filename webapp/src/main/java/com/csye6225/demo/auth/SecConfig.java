@@ -48,6 +48,7 @@ public class SecConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/time").permitAll()
             .antMatchers("/test").permitAll()
             .antMatchers("/").permitAll()
+            .antMatchers("/healthCheck").permitAll()
             .antMatchers("/user/transaction").permitAll()
             .antMatchers("/user/transactions").permitAll()
             .antMatchers("/user/transaction/{id}").permitAll()
