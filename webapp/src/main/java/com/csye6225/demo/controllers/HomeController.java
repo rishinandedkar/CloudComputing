@@ -39,6 +39,15 @@ public class HomeController {
 
   private final static Logger logger = LoggerFactory.getLogger(HomeController.class);
 
+  @RequestMapping(value="/healthCheck",method = RequestMethod.GET, produces="application/json")
+  @ResponseBody
+  public String healthCheck() {
+	  JsonObject jo = new JsonObject();
+	  jo.addProperty("message", "api hit");
+	  return "success";
+  }
+  
+  
   @RequestMapping(value="/time", method= RequestMethod.GET, produces= "application/json")
   @ResponseBody
   public String welcomeUser(HttpServletRequest request, HttpServletResponse response){

@@ -192,6 +192,22 @@
           "GroupDescription": "HTTP access via port 8080",
           "VpcId": { "Ref" : "myVPC" },
           "SecurityGroupIngress": [
+            {
+             "IpProtocol" : "tcp",
+             "FromPort" : "22",
+             "ToPort" : "22",
+             "CidrIp" : "0.0.0.0/0" },
+            {
+             "IpProtocol" : "tcp",
+             "FromPort" : "80",
+             "ToPort" : "80",
+             "CidrIp" : "0.0.0.0/0" },
+            {
+             "IpProtocol" : "tcp",
+             "FromPort" : "443",
+             "ToPort" : "443",
+             "CidrIp" : "0.0.0.0/0"
+            },
               {
                   "IpProtocol": "tcp",
                   "FromPort": "8080",
@@ -214,7 +230,17 @@
            "ToPort": "443",
            "CidrIp": "0.0.0.0/0"
        }
-   ]
+   ],
+   "SecurityGroupEgress":[
+              {
+                 "IpProtocol":"tcp",
+                 "FromPort":"8080",
+                 "ToPort":"8080",
+                 "DestinationSecurityGroupId":{
+                    "Ref":"WebServerSecurityGroup"
+                 }
+              }
+           ]
 }
 },
 "DBEC2SecurityGroup": {
@@ -235,59 +261,6 @@
   }
 }
 
-
-},
-  "Outputs" : {
-    "dbSubnet1Id" : {
-      "Description" : "The ID of the db subnet1",
-      "Value" : { "Ref" : "dbSubnet1" },
-      "Export" : {
-        "Name" : "csye6225-cloud-Networking-db-subnet1Id"
-      }
-    },
-    "dbSubnet2Id" : {
-      "Description" : "The ID of the db subnet 2",
-      "Value" : { "Ref" : "dbSubnet2" },
-      "Export" : {
-        "Name" : "csye6225-cloud-Networking-db-subnet2Id"
-      }
-    },
-    "dbSubnet3Id" : {
-      "Description" : "The ID of the db subnet 3",
-      "Value" : { "Ref" : "dbSubnet3" },
-      "Export" : {
-        "Name" : "csye6225-cloud-Networking-db-subnet3Id"
-      }
-    },
-    "webSubnetId1" : {
-      "Description" : "The ID of web subnet 1",
-      "Value" : {"Ref" : "webSubnet1"},
-      "Export" : {
-        "Name" : "csye6225-cloud-Networking-web-subnet1"
-      }
-    },
-    "webSubnetId2" : {
-      "Description" : "The ID of web subnet 2",
-      "Value" : {"Ref" : "webSubnet2"},
-      "Export" : {
-        "Name" : "csye6225-cloud-Networking-web-subnet2"
-      }
-    },
-    "webSubnetId3" : {
-      "Description" : "The ID of web subnet 3",
-      "Value" : {"Ref" : "webSubnet3"},
-      "Export" : {
-        "Name" : "csye6225-cloud-Networking-web-subnet3"
-      }
-    },
-
-    "myvpcID" : {
-      "Description" : "The ID of vpc",
-      "Value" : {"Ref" : "myVPC"},
-      "Export" : {
-        "Name" : "csye6225-cloud-Networking-VPC"
-      }
-    }
 
 }
 }
