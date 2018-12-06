@@ -1,5 +1,5 @@
 {
-<<<<<<< HEAD
+
    "AWSTemplateFormatVersion":"2010-09-09",
    "Parameters":{
       "vpcTag":{
@@ -70,9 +70,8 @@
                   "IpProtocol":"tcp",
                   "FromPort":22,
                   "ToPort":22,
-                  "CidrIp":"0.0.0.0/0"
-=======
-"AWSTemplateFormatVersion" : "2010-09-09",
+                  "CidrIp":"0.0.0.0/0",
+                  "AWSTemplateFormatVersion" : "2010-09-09",
 "Description" : "Application Stack",
   "Parameters": {
     "vpcTag": {
@@ -162,7 +161,7 @@
                    "FromPort": 22,
                    "ToPort" : 22,
                    "CidrIp" : "0.0.0.0/0"
->>>>>>> 43326347b3bcdd00b7bc9c19dd3aeb7311344095
+
                },
                {
                   "IpProtocol":"tcp",
@@ -345,7 +344,7 @@
                               ]
                            ]
                         },
-<<<<<<< HEAD
+
                         {
                            "Fn::Join":[
                               "",
@@ -454,11 +453,7 @@
          },
          "DependsOn":"RDSDB"
       },
-      "MySNSTopic":{
-         "Type":"AWS::SNS::Topic",
-         "Properties":{
-            "TopicName":"password_reset",
-=======
+
                 {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.profiles.active=s3developement\"'>> /opt/tomcat/bin/setenv.sh\n"]]},
                 {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.username=",{"Ref":"DBUsername"},"\"' >> /opt/tomcat/bin/setenv.sh\n"]]},
                 {"Fn::Join":["",["sudo echo 'JAVA_OPTS=\"$JAVA_OPTS -Dspring.datasource.password=",{"Ref":"DBPassword"},"\"' >> /opt/tomcat/bin/setenv.sh\n"]]},
@@ -579,7 +574,7 @@
   },
 
   "Outputs": {
->>>>>>> 43326347b3bcdd00b7bc9c19dd3aeb7311344095
+
 
          "Subscription":[
             {
